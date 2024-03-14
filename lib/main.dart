@@ -33,15 +33,13 @@ class MyAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  var favorites = <WordPair>[];
+  int bigBlind = 100;
+  int smallBlind = 100;
+  int ante = 100;
 
-  void toggleFavorite() {
-    if (favorites.contains(current)) {
-      favorites.remove(current);
-    } else {
-      favorites.add(current);
-    }
-    print('favorites: $favorites');
+  void updateBigBlind(int inputValue) {
+    bigBlind = inputValue;
+    print('bigBlind: $bigBlind');
     notifyListeners();
   }
 }
@@ -60,10 +58,10 @@ class _MyHomePageState extends State<MyHomePage> {
     Widget page;
     switch (selectedIndex) {
       case 0:
-        page = GeneratorPage();
+        page = StartPage();
         break;
       case 1:
-        page = FavoritePage();
+        page = BlindPage();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -111,41 +109,22 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class GeneratorPage extends StatelessWidget {
+class StartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
-    var pair = appState.current;
-
-    IconData icon;
-    if (appState.favorites.contains(pair)) {
-      icon = Icons.favorite;
-    } else {
-      icon = Icons.favorite_border;
-    }
-
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          BigCard(pair: pair),
           SizedBox(height: 10),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ElevatedButton.icon(
-                onPressed: () {
-                  appState.toggleFavorite();
-                },
-                icon: Icon(icon),
-                label: Text('Like'),
-              ),
-              SizedBox(width: 10),
               ElevatedButton(
                 onPressed: () {
-                  appState.getNext();
+                  print(Text('Click')); 
                 },
-                child: Text('Next'),
+                child: Text('Start'),
               ),
             ],
           ),
@@ -155,47 +134,51 @@ class GeneratorPage extends StatelessWidget {
   }
 }
 
-class BigCard extends StatelessWidget {
-  const BigCard({
-    super.key,
-    required this.pair,
-  });
-
-  final WordPair pair;
-
+class BlindPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final style = theme.textTheme.displayMedium!.copyWith(
-      color: theme.colorScheme.onPrimary,
-    );
-
-    return Card(
-      color: theme.colorScheme.primary,
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Text(
-          pair.asLowerCase,
-          style: style,
-          semanticsLabel: "${pair.first} ${pair.second}",
-        ), 
-      ),
-    );
+    return Column(
+        children: [
+          Text('Blind'),
+          NumberInputField(),
+        ],
+      );
   }
 }
 
-class FavoritePage extends StatelessWidget {
+class NumberInputField extends StatefulWidget {
+  @override
+  _NumberInputFieldState createState() => _NumberInputFieldState();
+}
+
+class _NumberInputFieldState extends State<NumberInputField> {
+  final TextEditingController _controller = TextEditingController();
+
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
-    var favorites = appState.favorites;
 
-    return ListView(
-      children: [
-        Text('Favorite words'),
-        for (var favorite in favorites)
-          Text(favorite.asString),
-        ],
-      );
+    var appState = context.watch<MyAppState>();
+    return TextField(
+      controller: _controller,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: 'BigBlindを入力',
+      ),
+      onChanged: (value) {
+        int? inputNumber = int.tryParse(value);
+        if (inputNumber != null) {
+          appState.updateBigBlind(int.parse(value));
+        }
+      },
+            
+    );
   }
 }
