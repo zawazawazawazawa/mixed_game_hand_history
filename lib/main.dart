@@ -40,7 +40,6 @@ class MyAppState extends ChangeNotifier {
 
   void updateBigBlind(int inputValue) {
     bigBlind = inputValue;
-    print('bigBlind: $bigBlind');
     notifyListeners();
   }
 }
@@ -146,9 +145,28 @@ class BlindPage extends StatelessWidget {
         children: [
           Text('Blind'),
           NumberInputField(),
+          SizedBox(height: 20),
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              FloatingActionButton(
+                onPressed: () {
+                  appState.updateBigBlind(appState.bigBlind - 100);
+                },
+                tooltip: 'Decrement',
+                child: Icon(Icons.remove),
+              ),
+              SizedBox(width: 20),
+              Container(
+                width: 100,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('100'),
+                  ],
+                ),
+              ),
+              SizedBox(width: 20),
               FloatingActionButton(
                 onPressed: () {
                   appState.updateBigBlind(appState.bigBlind + 100);
@@ -156,13 +174,67 @@ class BlindPage extends StatelessWidget {
                 tooltip: 'Increment',
                 child: Icon(Icons.add),
               ),
-              SizedBox(width: 20),
+            ],
+          ),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
               FloatingActionButton(
                 onPressed: () {
-                  appState.updateBigBlind(appState.bigBlind - 100);
+                  appState.updateBigBlind(appState.bigBlind - 1000);
                 },
                 tooltip: 'Decrement',
                 child: Icon(Icons.remove),
+              ),
+              SizedBox(width: 20),
+              Container(
+                width: 100,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('1000'),
+                  ],
+                ),
+              ),
+              SizedBox(width: 20),
+              FloatingActionButton(
+                onPressed: () {
+                  appState.updateBigBlind(appState.bigBlind + 1000);
+                },
+                tooltip: 'Increment',
+                child: Icon(Icons.add),
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              FloatingActionButton(
+                onPressed: () {
+                  appState.updateBigBlind(appState.bigBlind - 10000);
+                },
+                tooltip: 'Decrement',
+                child: Icon(Icons.remove),
+              ),
+              SizedBox(width: 20),
+              Container(
+                width: 100,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('10000'),
+                  ],
+                ),
+              ),
+              SizedBox(width: 20),
+              FloatingActionButton(
+                onPressed: () {
+                  appState.updateBigBlind(appState.bigBlind + 10000);
+                },
+                tooltip: 'Increment',
+                child: Icon(Icons.add),
               ),
             ],
           ),
@@ -206,8 +278,6 @@ class _NumberInputFieldState extends State<NumberInputField> {
 
     _controller.value = _controller.value.copyWith(text: appState.bigBlind.toString());
 
-    print('value: $_controller');
-    
     return TextFormField(
         controller: _controller,
         keyboardType: TextInputType.number,
