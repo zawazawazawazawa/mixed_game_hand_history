@@ -1,6 +1,7 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(MyApp());
@@ -136,11 +137,35 @@ class StartPage extends StatelessWidget {
 
 class BlindPage extends StatelessWidget {
   @override
+  
   Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+
     return Column(
+      
         children: [
           Text('Blind'),
           NumberInputField(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              FloatingActionButton(
+                onPressed: () {
+                  appState.updateBigBlind(appState.bigBlind + 100);
+                },
+                tooltip: 'Increment',
+                child: Icon(Icons.add),
+              ),
+              SizedBox(width: 20),
+              FloatingActionButton(
+                onPressed: () {
+                  appState.updateBigBlind(appState.bigBlind - 100);
+                },
+                tooltip: 'Decrement',
+                child: Icon(Icons.remove),
+              ),
+            ],
+          ),
         ],
       );
   }
@@ -154,6 +179,19 @@ class NumberInputField extends StatefulWidget {
 class _NumberInputFieldState extends State<NumberInputField> {
   final TextEditingController _controller = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() {
+      final String text = _controller.text;
+      _controller.value = _controller.value.copyWith(
+        text: text,
+        selection:
+            TextSelection(baseOffset: text.length, extentOffset: text.length),
+        composing: TextRange.empty,
+      );
+    });
+  }
 
   @override
   void dispose() {
@@ -165,20 +203,23 @@ class _NumberInputFieldState extends State<NumberInputField> {
   Widget build(BuildContext context) {
 
     var appState = context.watch<MyAppState>();
-    return TextField(
-      controller: _controller,
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        labelText: 'BigBlindを入力',
-      ),
-      onChanged: (value) {
-        int? inputNumber = int.tryParse(value);
-        if (inputNumber != null) {
-          appState.updateBigBlind(int.parse(value));
-        }
-      },
-            
-    );
+
+    _controller.value = _controller.value.copyWith(text: appState.bigBlind.toString());
+
+    print('value: $_controller');
+    
+    return TextFormField(
+        controller: _controller,
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(
+            border: OutlineInputBorder(),
+            labelText: 'BigBlindを入力'
+          ),
+        onChanged: (value) {
+          int inputNumber = int.tryParse(value) ?? 0;
+          appState.updateBigBlind(inputNumber);
+        },
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+      );
   }
 }
