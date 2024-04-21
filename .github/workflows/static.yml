@@ -38,7 +38,7 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
       - name: Build Web
-        run: flutter build web 
+        run: flutter build web --base-href "/fastest_hand_history/"
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
