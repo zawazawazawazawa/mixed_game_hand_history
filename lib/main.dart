@@ -27,16 +27,16 @@ class MyApp extends StatelessWidget {
 }
 
 class MyAppState extends ChangeNotifier {
-  var current = WordPair.random();
-
-  void getNext() {
-    current = WordPair.random();
-    notifyListeners();
-  }
+  int selectedIndex = 0;
 
   int bigBlind = 100;
   int smallBlind = 100;
   int ante = 100;
+
+  void updateSelectedIndex(int inputValue) {
+    selectedIndex = inputValue;
+    notifyListeners();
+  }
 
   void updateBigBlind(int inputValue) {
     bigBlind = inputValue;
@@ -50,11 +50,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
-  var selectedIndex = 0;
-  
   @override
   Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+
+    var selectedIndex = appState.selectedIndex;
     Widget page;
     switch (selectedIndex) {
       case 0:
@@ -66,8 +66,6 @@ class _MyHomePageState extends State<MyHomePage> {
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
-
-
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -89,9 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ],
                   selectedIndex: selectedIndex,
                   onDestinationSelected: (value) {
-                    setState(() {
-                      selectedIndex = value;
-                    });
+                    appState.updateSelectedIndex(value);
                   },
                 ),
               ),
@@ -112,6 +108,8 @@ class _MyHomePageState extends State<MyHomePage> {
 class StartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -122,7 +120,8 @@ class StartPage extends StatelessWidget {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  print(Text('Click')); 
+                  // BigBlindページへ遷移
+                  appState.updateSelectedIndex(1);
                 },
                 child: Text('Start'),
               ),
@@ -157,7 +156,7 @@ class BlindPage extends StatelessWidget {
                 child: Icon(Icons.remove),
               ),
               SizedBox(width: 20),
-              Container(
+              SizedBox(
                 width: 100,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -188,7 +187,7 @@ class BlindPage extends StatelessWidget {
                 child: Icon(Icons.remove),
               ),
               SizedBox(width: 20),
-              Container(
+              SizedBox(
                 width: 100,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -219,7 +218,7 @@ class BlindPage extends StatelessWidget {
                 child: Icon(Icons.remove),
               ),
               SizedBox(width: 20),
-              Container(
+              SizedBox(
                 width: 100,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
