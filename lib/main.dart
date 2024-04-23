@@ -32,6 +32,7 @@ class MyAppState extends ChangeNotifier {
   int bigBlind = 100;
   int smallBlind = 100;
   int ante = 100;
+  int participants = 2;
 
   void updateSelectedIndex(String inputValue) {
     selectedIndex = inputValue;
@@ -40,6 +41,11 @@ class MyAppState extends ChangeNotifier {
 
   void updateBigBlind(int inputValue) {
     bigBlind = inputValue;
+    notifyListeners();
+  }
+  
+  void updateParticipants(int inputValue) {
+    participants = inputValue;
     notifyListeners();
   }
 }
@@ -62,6 +68,9 @@ class _MyHomePageState extends State<MyHomePage> {
         break;
       case 'blind':
         page = BlindPage();
+        break;
+      case 'participants':
+        page = Placeholder();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -121,7 +130,6 @@ class BlindPage extends StatelessWidget {
     var appState = context.watch<MyAppState>();
 
     return Column(
-      
         children: [
           Text('Blind'),
           NumberInputField(),
@@ -218,10 +226,32 @@ class BlindPage extends StatelessWidget {
               ),
             ],
           ),
+          ElevatedButton(
+            onPressed: () {
+              // participantsページへ遷移
+              appState.updateSelectedIndex('participants');
+            },
+            child: Text('参加人数を入力'),
+           ),
         ],
       );
   }
 }
+
+//class ParticipantPage extends StatelessWidget {
+//  @override
+//
+//  Widget build(BuildContext context) {
+//    var appState = context.watch<MyAppState>();
+//    
+//    return Column(
+//        children: [
+//          Text('参加人数'),
+//          NumberInputField(),
+//        ]
+//      );
+//    
+//}
 
 class NumberInputField extends StatefulWidget {
   @override
