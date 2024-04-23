@@ -27,13 +27,13 @@ class MyApp extends StatelessWidget {
 }
 
 class MyAppState extends ChangeNotifier {
-  int selectedIndex = 0;
+  String selectedIndex = 'home';
 
   int bigBlind = 100;
   int smallBlind = 100;
   int ante = 100;
 
-  void updateSelectedIndex(int inputValue) {
+  void updateSelectedIndex(String inputValue) {
     selectedIndex = inputValue;
     notifyListeners();
   }
@@ -57,10 +57,10 @@ class _MyHomePageState extends State<MyHomePage> {
     var selectedIndex = appState.selectedIndex;
     Widget page;
     switch (selectedIndex) {
-      case 0:
+      case 'home':
         page = StartPage();
         break;
-      case 1:
+      case 'blind':
         page = BlindPage();
         break;
       default:
@@ -72,25 +72,6 @@ class _MyHomePageState extends State<MyHomePage> {
         return Scaffold(
           body: Row(
             children: [
-              SafeArea(
-                child: NavigationRail(
-                  extended: constraints.maxWidth >= 600,
-                  destinations: [
-                    NavigationRailDestination(
-                      icon: Icon(Icons.home),
-                      label: Text('Home'),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.favorite),
-                      label: Text('Favorites'),
-                    ),
-                  ],
-                  selectedIndex: selectedIndex,
-                  onDestinationSelected: (value) {
-                    appState.updateSelectedIndex(value);
-                  },
-                ),
-              ),
               Expanded(
                 child: Container(
                   color: Theme.of(context).colorScheme.primaryContainer,
@@ -121,7 +102,7 @@ class StartPage extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   // BigBlindページへ遷移
-                  appState.updateSelectedIndex(1);
+                  appState.updateSelectedIndex('blind');
                 },
                 child: Text('Start'),
               ),
