@@ -48,6 +48,21 @@ class MyAppState extends ChangeNotifier {
     participants = inputValue;
     notifyListeners();
   }
+
+  getProperty(String key) {
+    switch (key) {
+      case 'bigBlind':
+          return bigBlind;
+      case 'smallBlind':
+          return smallBlind;
+      case 'ante':
+          return ante;
+      case 'participants':
+          return participants;
+      default:
+          throw UnimplementedError('oh my god');
+    }
+  }
 }
 
 class MyHomePage extends StatefulWidget {
@@ -70,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
         page = BlindPage();
         break;
       case 'participants':
-        page = Placeholder();
+        page = ParticipantPage();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -132,7 +147,7 @@ class BlindPage extends StatelessWidget {
     return Column(
         children: [
           Text('Blind'),
-          NumberInputField(),
+          NumberInputField(label: 'BigBlind', attribute: 'bigBlind', handler: appState.updateBigBlind),
           SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -238,32 +253,44 @@ class BlindPage extends StatelessWidget {
   }
 }
 
-//class ParticipantPage extends StatelessWidget {
-//  @override
-//
-//  Widget build(BuildContext context) {
-//    var appState = context.watch<MyAppState>();
-//    
-//    return Column(
-//        children: [
-//          Text('参加人数'),
-//          NumberInputField(),
-//        ]
-//      );
-//    
-//}
+class ParticipantPage extends StatelessWidget {
+  @override
+
+  Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+    
+    return Column(
+        children: [
+          Text('参加人数'),
+          NumberInputField(label: '参加人数', attribute: 'participants', handler: appState.updateParticipants),
+        ]
+      );
+  }
+}
 
 class NumberInputField extends StatefulWidget {
+  final String label;
+  final String attribute;
+  final void Function(int) handler;
+
+  NumberInputField({required this.label, required this.attribute, required this.handler});
+
   @override
   _NumberInputFieldState createState() => _NumberInputFieldState();
 }
 
 class _NumberInputFieldState extends State<NumberInputField> {
   final TextEditingController _controller = TextEditingController();
+  late String _label;
+  late String _attribute;
+  late void Function(int) _handler;
 
   @override
   void initState() {
     super.initState();
+    _label = widget.label;
+    _attribute = widget.attribute;
+    _handler = widget.handler;
     _controller.addListener(() {
       final String text = _controller.text;
       _controller.value = _controller.value.copyWith(
@@ -283,21 +310,19 @@ class _NumberInputFieldState extends State<NumberInputField> {
 
   @override
   Widget build(BuildContext context) {
-
     var appState = context.watch<MyAppState>();
-
-    _controller.value = _controller.value.copyWith(text: appState.bigBlind.toString());
+    _controller.value = _controller.value.copyWith(text: appState.getProperty(_attribute).toString());
 
     return TextFormField(
         controller: _controller,
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
             border: OutlineInputBorder(),
-            labelText: 'BigBlindを入力'
+            labelText: _label
           ),
         onChanged: (value) {
           int inputNumber = int.tryParse(value) ?? 0;
-          appState.updateBigBlind(inputNumber);
+          _handler(inputNumber);
         },
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       );
