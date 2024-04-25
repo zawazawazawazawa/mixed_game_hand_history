@@ -103,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
         page = ParticipantPage();
         break;
       case 'preflop':
-        page = Placeholder();
+        page = PreflopPage();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -522,6 +522,20 @@ class ParticipantPage extends StatelessWidget {
            ),
         ]
       );
+  }
+}
+
+class PreflopPage extends StatelessWidget {
+  @override
+  Widget build (BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('TO BE IMPLEMENTED')
+        ],
+      ),
+    );
   }
 }
 
