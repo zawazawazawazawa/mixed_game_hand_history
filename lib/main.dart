@@ -55,8 +55,13 @@ class MyAppState extends ChangeNotifier {
   }
 
   void updateParticipants(int inputValue) {
-    participants = inputValue;
-    notifyListeners();
+    const int maxParticipants = 9;
+    const int minParticipants = 2;
+
+    if (inputValue >= minParticipants && inputValue <= maxParticipants) {
+      participants = inputValue;
+      notifyListeners();
+    }
   }
 
   getProperty(String key) {
