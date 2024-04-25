@@ -1,4 +1,3 @@
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
@@ -43,7 +42,18 @@ class MyAppState extends ChangeNotifier {
     bigBlind = inputValue;
     notifyListeners();
   }
-  
+
+  void updateSmallBlind(int inputValue) {
+    smallBlind = inputValue;
+    notifyListeners();
+  }
+
+
+  void updateAnte(int inputValue) {
+    ante = inputValue;
+    notifyListeners();
+  }
+
   void updateParticipants(int inputValue) {
     participants = inputValue;
     notifyListeners();
@@ -86,6 +96,9 @@ class _MyHomePageState extends State<MyHomePage> {
         break;
       case 'participants':
         page = ParticipantPage();
+        break;
+      case 'preflop':
+        page = Placeholder();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -144,7 +157,8 @@ class BlindPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
 
-    return Column(
+    return SingleChildScrollView(
+      child: Column(
         children: [
           Text('Blind'),
           NumberInputField(label: 'BigBlind', attribute: 'bigBlind', handler: appState.updateBigBlind),
@@ -241,6 +255,197 @@ class BlindPage extends StatelessWidget {
               ),
             ],
           ),
+          SizedBox(height: 40),
+          NumberInputField(label: 'SmallBlind', attribute: 'smallBlind', handler: appState.updateSmallBlind),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              FloatingActionButton(
+                onPressed: () {
+                  appState.updateSmallBlind(appState.smallBlind - 100);
+                },
+                tooltip: 'Decrement',
+                child: Icon(Icons.remove),
+              ),
+              SizedBox(width: 20),
+              SizedBox(
+                width: 100,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('100'),
+                  ],
+                ),
+              ),
+              SizedBox(width: 20),
+              FloatingActionButton(
+                onPressed: () {
+                  appState.updateSmallBlind(appState.smallBlind + 100);
+                },
+                tooltip: 'Increment',
+                child: Icon(Icons.add),
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              FloatingActionButton(
+                onPressed: () {
+                  appState.updateSmallBlind(appState.smallBlind - 1000);
+                },
+                tooltip: 'Decrement',
+                child: Icon(Icons.remove),
+              ),
+              SizedBox(width: 20),
+              SizedBox(
+                width: 100,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('1000'),
+                  ],
+                ),
+              ),
+              SizedBox(width: 20),
+              FloatingActionButton(
+                onPressed: () {
+                  appState.updateSmallBlind(appState.smallBlind + 1000);
+                },
+                tooltip: 'Increment',
+                child: Icon(Icons.add),
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              FloatingActionButton(
+                onPressed: () {
+                  appState.updateSmallBlind(appState.smallBlind - 10000);
+                },
+                tooltip: 'Decrement',
+                child: Icon(Icons.remove),
+              ),
+              SizedBox(width: 20),
+              SizedBox(
+                width: 100,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('10000'),
+                  ],
+                ),
+              ),
+              SizedBox(width: 20),
+              FloatingActionButton(
+                onPressed: () {
+                  appState.updateSmallBlind(appState.smallBlind + 10000);
+                },
+                tooltip: 'Increment',
+                child: Icon(Icons.add),
+              ),
+            ],
+          ),
+          SizedBox(height: 40),
+          NumberInputField(label: 'Ante', attribute: 'ante', handler: appState.updateAnte),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              FloatingActionButton(
+                onPressed: () {
+                  appState.updateAnte(appState.ante - 100);
+                },
+                tooltip: 'Decrement',
+                child: Icon(Icons.remove),
+              ),
+              SizedBox(width: 20),
+              SizedBox(
+                width: 100,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('100'),
+                  ],
+                ),
+              ),
+              SizedBox(width: 20),
+              FloatingActionButton(
+                onPressed: () {
+                  appState.updateAnte(appState.ante + 100);
+                },
+                tooltip: 'Increment',
+                child: Icon(Icons.add),
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              FloatingActionButton(
+                onPressed: () {
+                  appState.updateAnte(appState.ante - 1000);
+                },
+                tooltip: 'Decrement',
+                child: Icon(Icons.remove),
+              ),
+              SizedBox(width: 20),
+              SizedBox(
+                width: 100,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('1000'),
+                  ],
+                ),
+              ),
+              SizedBox(width: 20),
+              FloatingActionButton(
+                onPressed: () {
+                  appState.updateAnte(appState.ante + 1000);
+                },
+                tooltip: 'Increment',
+                child: Icon(Icons.add),
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              FloatingActionButton(
+                onPressed: () {
+                  appState.updateAnte(appState.ante - 10000);
+                },
+                tooltip: 'Decrement',
+                child: Icon(Icons.remove),
+              ),
+              SizedBox(width: 20),
+              SizedBox(
+                width: 100,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('10000'),
+                  ],
+                ),
+              ),
+              SizedBox(width: 20),
+              FloatingActionButton(
+                onPressed: () {
+                  appState.updateAnte(appState.ante + 10000);
+                },
+                tooltip: 'Increment',
+                child: Icon(Icons.add),
+              ),
+            ],
+          ),
+
           ElevatedButton(
             onPressed: () {
               // participantsページへ遷移
@@ -249,7 +454,8 @@ class BlindPage extends StatelessWidget {
             child: Text('参加人数を入力'),
            ),
         ],
-      );
+      )
+    );
   }
 }
 
@@ -263,6 +469,52 @@ class ParticipantPage extends StatelessWidget {
         children: [
           Text('参加人数'),
           NumberInputField(label: '参加人数', attribute: 'participants', handler: appState.updateParticipants),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              FloatingActionButton(
+                onPressed: () {
+                  appState.updateParticipants(appState.participants - 1);
+                },
+                tooltip: 'Decrement',
+                child: Icon(Icons.remove),
+              ),
+              SizedBox(width: 20),
+              SizedBox(
+                width: 100,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('1'),
+                  ],
+                ),
+              ),
+              SizedBox(width: 20),
+              FloatingActionButton(
+                onPressed: () {
+                  appState.updateParticipants(appState.participants + 1);
+                },
+                tooltip: 'Increment',
+                child: Icon(Icons.add),
+              ),
+            ],
+          ),
+          ElevatedButton(
+            onPressed: () {
+              // preflopページへ遷移
+              appState.updateSelectedIndex('preflop');
+            },
+            child: Text('preflopを入力'),
+           ),
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              // blindページへ遷移
+              appState.updateSelectedIndex('blind');
+            },
+            child: Text('Blindに戻る'),
+           ),
         ]
       );
   }
