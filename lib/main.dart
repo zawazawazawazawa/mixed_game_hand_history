@@ -458,6 +458,7 @@ class BlindPage extends StatelessWidget {
             },
             child: Text('参加人数を入力'),
            ),
+          SizedBox(height: 20)
         ],
       )
     );
@@ -528,13 +529,25 @@ class ParticipantPage extends StatelessWidget {
 class PreflopPage extends StatelessWidget {
   @override
   Widget build (BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('TO BE IMPLEMENTED')
-        ],
-      ),
+    var appState = context.watch<MyAppState>();
+
+    return Column(
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(appState.participants, (index) {
+              return RadioAction();
+            },
+          )
+        ),
+        ElevatedButton(
+          onPressed: () {
+            // blindページへ遷移
+            appState.updateSelectedIndex('participants');
+          },
+          child: Text('Blindに戻る'),
+        ),
+      ]
     );
   }
 }
@@ -597,5 +610,62 @@ class _NumberInputFieldState extends State<NumberInputField> {
         },
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       );
+  }
+}
+
+class RadioAction extends StatefulWidget {
+  @override
+  _RadioActionState createState() => _RadioActionState();
+}
+
+class _RadioActionState extends State<RadioAction> {
+  String? _selectedAction = 'fold';
+
+  void _handleRadioValueChange(String? value) {
+    setState(() {
+      _selectedAction = value;
+      print(_selectedAction);  // デバッグ目的で選択値をコンソールに表示
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Expanded(
+          child: ListTile(
+            title: Text('Raise'),
+            leading: Radio<String>(
+              value: 'raise',
+              groupValue: _selectedAction,
+              onChanged: _handleRadioValueChange,
+            ),
+          ),
+        ),
+        Expanded(
+          child:
+            ListTile(
+              title: Text('Call'),
+              leading: Radio<String>(
+                value: 'call',
+                groupValue: _selectedAction,
+                onChanged: _handleRadioValueChange,
+              ),
+            ),
+        ),
+        Expanded(
+          child: 
+            ListTile(
+              title: Text('Fold'),
+              leading: Radio<String>(
+                value: 'fold',
+                groupValue: _selectedAction,
+                onChanged: _handleRadioValueChange,
+              ),
+            ),
+        )
+      ] 
+    );
   }
 }
