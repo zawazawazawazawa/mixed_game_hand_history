@@ -9,7 +9,8 @@ class NumberInputField extends StatefulWidget {
   final String attribute;
   final void Function(int) handler;
 
-  NumberInputField({required this.label, required this.attribute, required this.handler});
+  NumberInputField(
+      {required this.label, required this.attribute, required this.handler});
 
   @override
   _NumberInputFieldState createState() => _NumberInputFieldState();
@@ -46,24 +47,21 @@ class _NumberInputFieldState extends State<NumberInputField> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MyAppState>(
-      builder: (context, state, child) { 
-        _controller.value = _controller.value.copyWith(text: state.getProperty(_attribute).toString());
-        
-        return TextFormField(
-          controller: _controller,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: _label
-            ),
-          onChanged: (value) {
-            int inputNumber = int.tryParse(value) ?? 0;
-            _handler(inputNumber);
-          },
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        );
-      }
-    );
+    return Consumer<MyAppState>(builder: (context, state, child) {
+      _controller.value = _controller.value
+          .copyWith(text: state.getProperty(_attribute).toString());
+
+      return TextFormField(
+        controller: _controller,
+        keyboardType: TextInputType.number,
+        decoration:
+            InputDecoration(border: OutlineInputBorder(), labelText: _label),
+        onChanged: (value) {
+          int inputNumber = int.tryParse(value) ?? 0;
+          _handler(inputNumber);
+        },
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+      );
+    });
   }
 }

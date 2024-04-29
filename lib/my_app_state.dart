@@ -14,7 +14,6 @@ class MyAppState extends ChangeNotifier {
   int get ante => _ante;
   int get participants => _participants;
 
-
   void updateSelectedIndex(String inputValue) {
     _selectedIndex = inputValue;
     notifyListeners();
@@ -29,7 +28,6 @@ class MyAppState extends ChangeNotifier {
     _smallBlind = inputValue;
     notifyListeners();
   }
-
 
   void updateAnte(int inputValue) {
     _ante = inputValue;
@@ -49,15 +47,15 @@ class MyAppState extends ChangeNotifier {
   getProperty(String key) {
     switch (key) {
       case 'bigBlind':
-          return bigBlind;
+        return bigBlind;
       case 'smallBlind':
-          return smallBlind;
+        return smallBlind;
       case 'ante':
-          return ante;
+        return ante;
       case 'participants':
-          return participants;
+        return participants;
       default:
-          throw UnimplementedError('oh my god');
+        throw UnimplementedError('oh my god');
     }
   }
 }

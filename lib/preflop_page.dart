@@ -104,6 +104,9 @@ class _RadioActionState extends State<RadioAction> {
             )
           ] 
         ),
+        Center(
+          child: _selectedAction == 'raise' ? Text('raiseした') : null
+        ),
       ],
     );
   }

@@ -38,45 +38,39 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<MyAppState>(
-      builder: (context, state, child) {
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            var selectedIndex = state.selectedIndex;
-            Widget page;
-            switch (selectedIndex) {
-              case 'home':
-                page = StartPage();
-                break;
-              case 'blind':
-                page = BlindPage();
-                break;
-              case 'participants':
-                page = ParticipantsPage();
-                break;
-              case 'preflop':
-                page = PreflopPage();
-                break;
-              default:
-                throw UnimplementedError('no widget for $selectedIndex');
-            }
-            return Scaffold(
-              body: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      color: Theme.of(context).colorScheme.primaryContainer,
-                      child: page,
-                    ),
-                  ),
-                ],
+    return Consumer<MyAppState>(builder: (context, state, child) {
+      return LayoutBuilder(builder: (context, constraints) {
+        var selectedIndex = state.selectedIndex;
+        Widget page;
+        switch (selectedIndex) {
+          case 'home':
+            page = StartPage();
+            break;
+          case 'blind':
+            page = BlindPage();
+            break;
+          case 'participants':
+            page = ParticipantsPage();
+            break;
+          case 'preflop':
+            page = PreflopPage();
+            break;
+          default:
+            throw UnimplementedError('no widget for $selectedIndex');
+        }
+        return Scaffold(
+          body: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  child: page,
+                ),
               ),
-            );
-          }
+            ],
+          ),
         );
-      }
-    );
+      });
+    });
   }
 }
-
-
