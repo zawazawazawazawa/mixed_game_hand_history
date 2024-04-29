@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 import 'blind_page.dart';
 import 'my_app_state.dart';
+import 'participants_page.dart';
 import 'start_page.dart';
 
 void main() {
@@ -51,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 page = BlindPage();
                 break;
               case 'participants':
-                page = ParticipantPage();
+                page = ParticipantsPage();
                 break;
               case 'preflop':
                 page = PreflopPage();
@@ -75,67 +76,6 @@ class _MyHomePageState extends State<MyHomePage> {
         );
       }
     );
-  }
-}
-
-class ParticipantPage extends StatelessWidget {
-  @override
-
-  Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
-    
-    return Column(
-        children: [
-          Text('参加人数'),
-          NumberInputField(label: '参加人数', attribute: 'participants', handler: appState.updateParticipants),
-          SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              FloatingActionButton(
-                onPressed: () {
-                  appState.updateParticipants(appState.participants - 1);
-                },
-                tooltip: 'Decrement',
-                child: Icon(Icons.remove),
-              ),
-              SizedBox(width: 20),
-              SizedBox(
-                width: 100,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('1'),
-                  ],
-                ),
-              ),
-              SizedBox(width: 20),
-              FloatingActionButton(
-                onPressed: () {
-                  appState.updateParticipants(appState.participants + 1);
-                },
-                tooltip: 'Increment',
-                child: Icon(Icons.add),
-              ),
-            ],
-          ),
-          ElevatedButton(
-            onPressed: () {
-              // preflopページへ遷移
-              appState.updateSelectedIndex('preflop');
-            },
-            child: Text('preflopを入力'),
-           ),
-          SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              // blindページへ遷移
-              appState.updateSelectedIndex('blind');
-            },
-            child: Text('Blindに戻る'),
-           ),
-        ]
-      );
   }
 }
 
