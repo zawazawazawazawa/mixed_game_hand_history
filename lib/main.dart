@@ -2,81 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 
+import 'my_app_state.dart';
+
 void main() {
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => MyAppState(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => MyAppState(),
-      child: MaterialApp(
-        title: 'Namer App',
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        ),
-        home: MyHomePage(),
+    return MaterialApp(
+      title: 'Namer App',
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
+      home: MyHomePage(),
     );
-  }
-}
-
-class MyAppState extends ChangeNotifier {
-  String selectedIndex = 'home';
-
-  int bigBlind = 100;
-  int smallBlind = 100;
-  int ante = 100;
-  int participants = 2;
-
-  void updateSelectedIndex(String inputValue) {
-    selectedIndex = inputValue;
-    notifyListeners();
-  }
-
-  void updateBigBlind(int inputValue) {
-    bigBlind = inputValue;
-    notifyListeners();
-  }
-
-  void updateSmallBlind(int inputValue) {
-    smallBlind = inputValue;
-    notifyListeners();
-  }
-
-
-  void updateAnte(int inputValue) {
-    ante = inputValue;
-    notifyListeners();
-  }
-
-  void updateParticipants(int inputValue) {
-    const int maxParticipants = 9;
-    const int minParticipants = 2;
-
-    if (inputValue >= minParticipants && inputValue <= maxParticipants) {
-      participants = inputValue;
-      notifyListeners();
-    }
-  }
-
-  getProperty(String key) {
-    switch (key) {
-      case 'bigBlind':
-          return bigBlind;
-      case 'smallBlind':
-          return smallBlind;
-      case 'ante':
-          return ante;
-      case 'participants':
-          return participants;
-      default:
-          throw UnimplementedError('oh my god');
-    }
   }
 }
 
@@ -88,40 +35,41 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
-
-    var selectedIndex = appState.selectedIndex;
-    Widget page;
-    switch (selectedIndex) {
-      case 'home':
-        page = StartPage();
-        break;
-      case 'blind':
-        page = BlindPage();
-        break;
-      case 'participants':
-        page = ParticipantPage();
-        break;
-      case 'preflop':
-        page = PreflopPage();
-        break;
-      default:
-        throw UnimplementedError('no widget for $selectedIndex');
-    }
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Scaffold(
-          body: Row(
-            children: [
-              Expanded(
-                child: Container(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  child: page,
-                ),
+    return Consumer<MyAppState>(
+      builder: (context, state, child) {
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            var selectedIndex = state.selectedIndex;
+            Widget page;
+            switch (selectedIndex) {
+              case 'home':
+                page = StartPage();
+                break;
+              case 'blind':
+                page = BlindPage();
+                break;
+              case 'participants':
+                page = ParticipantPage();
+                break;
+              case 'preflop':
+                page = PreflopPage();
+                break;
+              default:
+                throw UnimplementedError('no widget for $selectedIndex');
+            }
+            return Scaffold(
+              body: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                      child: page,
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          }
         );
       }
     );
@@ -131,27 +79,29 @@ class _MyHomePageState extends State<MyHomePage> {
 class StartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
-
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(height: 10),
-          Row(
-            mainAxisSize: MainAxisSize.min,
+    return Consumer<MyAppState>(
+      builder: (context, state, child) {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  // BigBlindページへ遷移
-                  appState.updateSelectedIndex('blind');
-                },
-                child: Text('Start'),
+              SizedBox(height: 10),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      // BigBlindページへ遷移
+                      state.updateSelectedIndex('blind');
+                    },
+                    child: Text('Start'),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
+        );
+      }
     );
   }
 }
