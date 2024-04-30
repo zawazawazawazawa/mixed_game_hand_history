@@ -1,4 +1,3 @@
-import 'package:fastest_hand_history/main.dart';
 import 'package:flutter/foundation.dart';
 
 class MyAppState extends ChangeNotifier {
@@ -7,14 +6,27 @@ class MyAppState extends ChangeNotifier {
   int _smallBlind = 100;
   int _ante = 100;
   int _participants = 2;
-  Map<int, Map<String, String>> _preflop = {1: {}};
+  List<PreFlopAction> _preflop = [];
+  // {
+  //    round: 1,
+  //    position: utg,
+  //    action: raise,
+  //    amount: 300
+  // },
+  // {
+  //    round: 1,
+  //    position: HJ,
+  //    action: fold,
+  //    amount: null
+  // }
+  //
 
   String get selectedIndex => _selectedIndex;
   int get bigBlind => _bigBlind;
   int get smallBlind => _smallBlind;
   int get ante => _ante;
   int get participants => _participants;
-  Map<int, Map<String, String>> get preflop => _preflop;
+  List<PreFlopAction> get preflop => _preflop;
 
   void updateSelectedIndex(String inputValue) {
     _selectedIndex = inputValue;
@@ -46,8 +58,15 @@ class MyAppState extends ChangeNotifier {
     }
   }
 
-  void updatePreflop(int round, String position, String action) {
-    preflop[round] = {position: action};
+  void updatePreflop(int round, String position, String action, int? amount) {
+    _preflop.add(PreFlopAction(
+      round: round,
+      position: position,
+      action: action,
+      amount: amount,
+    ));
+    print(_preflop);
+    notifyListeners();
   }
 
   getProperty(String key) {
@@ -64,4 +83,17 @@ class MyAppState extends ChangeNotifier {
         throw UnimplementedError('oh my god');
     }
   }
+}
+
+class PreFlopAction {
+  int round;
+  String position;
+  String action;
+  int? amount;
+
+  PreFlopAction(
+      {required this.round,
+      required this.position,
+      required this.action,
+      this.amount});
 }
