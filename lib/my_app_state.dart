@@ -7,12 +7,14 @@ class MyAppState extends ChangeNotifier {
   int _smallBlind = 100;
   int _ante = 100;
   int _participants = 2;
+  Map<int, Map<String, String>> _preflop = {1: {}};
 
   String get selectedIndex => _selectedIndex;
   int get bigBlind => _bigBlind;
   int get smallBlind => _smallBlind;
   int get ante => _ante;
   int get participants => _participants;
+  Map<int, Map<String, String>> get preflop => _preflop;
 
   void updateSelectedIndex(String inputValue) {
     _selectedIndex = inputValue;
@@ -42,6 +44,10 @@ class MyAppState extends ChangeNotifier {
       _participants = inputValue;
       notifyListeners();
     }
+  }
+
+  void updatePreflop(int round, String position, String action) {
+    preflop[round] = {position: action};
   }
 
   getProperty(String key) {
