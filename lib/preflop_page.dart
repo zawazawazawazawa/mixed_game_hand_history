@@ -13,6 +13,8 @@ class PreflopPage extends StatelessWidget {
         positions.insert(6, 'UTG+1');
       } else if (state.participants == 9) {
         positions.insertAll(6, ['UTG+2', 'UTG+1']);
+      } else {
+        positions = positions.sublist(0, state.participants);
       }
 
       return Column(children: [
@@ -54,6 +56,8 @@ class _RadioActionState extends State<RadioAction> {
     super.initState();
   }
 
+  // TODO
+  // Actionが全部一つのstateになっているので分離しないといけない
   void _handleRadioValueChange(String? value) {
     setState(() {
       _selectedAction = value;
