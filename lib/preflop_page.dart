@@ -28,10 +28,6 @@ class PreflopPage extends StatelessWidget {
       return Column(children: [
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          //children: List.generate(state.participants, (index) {
-          //    return RadioAction(positionName: positions[index]);
-          //  },
-          //).reversed.toList()
           children: <Widget>[RadioAction(positions: positions)],
         ),
         ElevatedButton(
@@ -76,120 +72,185 @@ class _RadioActionState extends State<RadioAction> {
     _positions = widget.positions;
   }
 
-  String? getActionStateFromIndex(int index) {
-    switch (_positions[_positions.length - index - 1]) {
-      case 'BB':
-        return _bbSelectedAction;
-      case 'SB':
-        return _sbSelectedAction;
-      case 'BTN':
-        return _btnSelectedAction;
-      case 'CO':
-        return _coSelectedAction;
-      case 'HJ':
-        return _hjSelectedAction;
-      case 'LJ':
-        return _ljSelectedAction;
-      case 'UTG+2':
-        return _utg2SelectedAction;
-      case 'UTG+1':
-        return _utg1SelectedAction;
-      case 'UTG':
-        return _utgSelectedAction;
-      default:
-        throw UnexpectedPositionError(
-            'unexpected position name is detected: ${_positions[_positions.length - _lastHandled - 1]}');
-    }
-  }
-
-  void _handleRadioValueChange(String? value) {
-    setState(() {
-      switch (_positions[_positions.length - _lastHandled - 1]) {
-        case 'BB':
-          _bbSelectedAction = value;
-
-          break;
-        case 'SB':
-          _sbSelectedAction = value;
-
-          break;
-        case 'BTN':
-          _btnSelectedAction = value;
-
-          break;
-        case 'CO':
-          _coSelectedAction = value;
-
-          break;
-        case 'HJ':
-          _hjSelectedAction = value;
-
-          break;
-        case 'LJ':
-          _ljSelectedAction = value;
-
-          break;
-        case 'UTG+2':
-          _utg2SelectedAction = value;
-
-          break;
-        case 'UTG+1':
-          _utg1SelectedAction = value;
-
-          break;
-        case 'UTG':
-          _utgSelectedAction = value;
-
-          break;
-        default:
-          throw UnexpectedPositionError(
-              'unexpected position name is detected: ${_positions[_positions.length - _lastHandled - 1]}');
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Column(
-        children: List<Widget>.generate(widget.positions.length, (index) {
-      return Visibility(
-        visible: index <= _lastHandled,
-        child: Row(
-          children: [
-            Text(widget.positions[widget.positions.length - index - 1]),
-            Expanded(
-              child: ListTile(
-                title: Text('Raise'),
-                leading: Radio<String>(
-                  value: 'raise',
-                  groupValue: getActionStateFromIndex(index),
-                  onChanged: _handleRadioValueChange,
+    return Consumer<MyAppState>(builder: (context, state, children) {
+      String? getActionStateFromIndex(int index) {
+        switch (_positions[_positions.length - index - 1]) {
+          case 'BB':
+            return _bbSelectedAction;
+          case 'SB':
+            return _sbSelectedAction;
+          case 'BTN':
+            return _btnSelectedAction;
+          case 'CO':
+            return _coSelectedAction;
+          case 'HJ':
+            return _hjSelectedAction;
+          case 'LJ':
+            return _ljSelectedAction;
+          case 'UTG+2':
+            return _utg2SelectedAction;
+          case 'UTG+1':
+            return _utg1SelectedAction;
+          case 'UTG':
+            return _utgSelectedAction;
+          default:
+            throw UnexpectedPositionError(
+                'unexpected position name is detected: ${_positions[_positions.length - _lastHandled - 1]}');
+        }
+      }
+
+      void _handleRadioValueChange({String? value, required int index}) {
+        String position = _positions[_positions.length - index - 1];
+
+        setState(() {
+          switch (position) {
+            case 'BB':
+              _bbSelectedAction = value;
+              state.updatePreflop(
+                  round: 1,
+                  position: position,
+                  action: _bbSelectedAction,
+                  amount: 0);
+
+              break;
+            case 'SB':
+              _sbSelectedAction = value;
+              state.updatePreflop(
+                  round: 1,
+                  position: position,
+                  action: _sbSelectedAction,
+                  amount: 0);
+
+              break;
+            case 'BTN':
+              _btnSelectedAction = value;
+              state.updatePreflop(
+                  round: 1,
+                  position: position,
+                  action: _btnSelectedAction,
+                  amount: 0);
+
+              break;
+            case 'CO':
+              _coSelectedAction = value;
+              state.updatePreflop(
+                  round: 1,
+                  position: position,
+                  action: _coSelectedAction,
+                  amount: 0);
+
+              break;
+            case 'HJ':
+              _hjSelectedAction = value;
+              state.updatePreflop(
+                  round: 1,
+                  position: position,
+                  action: _hjSelectedAction,
+                  amount: 0);
+
+              break;
+            case 'LJ':
+              _ljSelectedAction = value;
+              state.updatePreflop(
+                  round: 1,
+                  position: position,
+                  action: _ljSelectedAction,
+                  amount: 0);
+
+              break;
+            case 'UTG+2':
+              _utg2SelectedAction = value;
+              state.updatePreflop(
+                  round: 1,
+                  position: position,
+                  action: _utg2SelectedAction,
+                  amount: 0);
+
+              break;
+            case 'UTG+1':
+              _utg1SelectedAction = value;
+              state.updatePreflop(
+                  round: 1,
+                  position: position,
+                  action: _utg1SelectedAction,
+                  amount: 0);
+
+              break;
+            case 'UTG':
+              _utgSelectedAction = value;
+              state.updatePreflop(
+                  round: 1,
+                  position: position,
+                  action: _utgSelectedAction,
+                  amount: 0);
+
+              break;
+            default:
+              throw UnexpectedPositionError(
+                  'unexpected position name is detected: $position');
+          }
+
+          if (_positions.length > _lastHandled + 1) {
+            _lastHandled += 1;
+          }
+        });
+      }
+
+      return Column(
+          children: List<Widget>.generate(_positions.length, (int index) {
+        return Visibility(
+          visible: index <= _lastHandled,
+          child: Row(
+            children: [
+              Text(widget.positions[_positions.length - index - 1]),
+              Expanded(
+                child: ListTile(
+                  title: Text('Raise'),
+                  leading: Radio<String>(
+                    value: 'raise',
+                    groupValue: getActionStateFromIndex(index),
+                    onChanged: (String? value) {
+                      if (index == _lastHandled && value != null) {
+                        _handleRadioValueChange(value: value, index: index);
+                      }
+                    },
+                  ),
                 ),
               ),
-            ),
-            Expanded(
-              child: ListTile(
-                title: Text('Call'),
-                leading: Radio<String>(
-                  value: 'call',
-                  groupValue: getActionStateFromIndex(index),
-                  onChanged: _handleRadioValueChange,
+              Expanded(
+                child: ListTile(
+                  title: Text('Call'),
+                  leading: Radio<String>(
+                    value: 'call',
+                    groupValue: getActionStateFromIndex(index),
+                    onChanged: (String? value) {
+                      if (index == _lastHandled && value != null) {
+                        _handleRadioValueChange(value: value, index: index);
+                      }
+                    },
+                  ),
                 ),
               ),
-            ),
-            Expanded(
-              child: ListTile(
-                title: Text('Fold'),
-                leading: Radio<String>(
-                  value: 'fold',
-                  groupValue: getActionStateFromIndex(),
-                  onChanged: _handleRadioValueChange,
+              Expanded(
+                child: ListTile(
+                  title: Text('Fold'),
+                  leading: Radio<String>(
+                    value: 'fold',
+                    groupValue: getActionStateFromIndex(index),
+                    onChanged: (String? value) {
+                      if (index == _lastHandled && value != null) {
+                        _handleRadioValueChange(value: value, index: index);
+                      }
+                    },
+                  ),
                 ),
-              ),
-            )
-          ],
-        ),
-      );
-    }));
+              )
+            ],
+          ),
+        );
+      }));
+    });
   }
 }

@@ -58,14 +58,17 @@ class MyAppState extends ChangeNotifier {
     }
   }
 
-  void updatePreflop(int round, String position, String action, int? amount) {
+  void updatePreflop(
+      {required int round,
+      required String position,
+      required String? action,
+      required int? amount}) {
     _preflop.add(PreFlopAction(
       round: round,
       position: position,
       action: action,
       amount: amount,
     ));
-    print(_preflop);
     notifyListeners();
   }
 
@@ -88,7 +91,7 @@ class MyAppState extends ChangeNotifier {
 class PreFlopAction {
   int round;
   String position;
-  String action;
+  String? action;
   int? amount;
 
   PreFlopAction(
@@ -96,4 +99,15 @@ class PreFlopAction {
       required this.position,
       required this.action,
       this.amount});
+
+  Map<String, dynamic> toJson() {
+    var data = {
+      'round': round,
+      'position': position,
+      'action': action,
+      'amount': amount,
+    };
+
+    return data;
+  }
 }
