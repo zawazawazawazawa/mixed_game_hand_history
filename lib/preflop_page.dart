@@ -31,13 +31,6 @@ class PreflopPage extends StatelessWidget {
         Text('Big Blind: ${state.bigBlind}'),
         Text('Ante: ${state.ante}'),
         Text('${state.participants} handed'),
-        state.preflop.length > 0
-            ? Column(
-                children: state.preflop.map((e) {
-                return Text(
-                    "round: ${e.round}, position: ${e.position}, action: ${e.action}, amount: ${e.amount}");
-              }).toList())
-            : Container(),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[RadioAction(positions: positions)],
@@ -59,7 +52,7 @@ class PreflopPage extends StatelessWidget {
         SizedBox(height: 20),
         ElevatedButton(
           onPressed: () {
-            // TO BE IMPLEMENTED
+            state.updateSelectedIndex('flop');
           },
           child: Text('Flopを入力'),
         ),
@@ -284,8 +277,6 @@ class _RadioActionState extends State<RadioAction> {
           {required int amount, required int index}) {
         String position = _positions[_positions.length - index - 1];
 
-        print('_handlerは呼ばれている');
-
         setState(() {
           switch (position) {
             case 'BB':
@@ -468,7 +459,6 @@ class _RaisedAmountInputFieldState extends State<RaisedAmountInputField> {
     _handler = widget.handler;
     focusNode.addListener(() {
       if (!focusNode.hasFocus) {
-        print('ここにはきてる');
         try {
           int amount = int.parse(_controller.text);
           _handler(amount: amount, index: _index);

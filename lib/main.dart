@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'blind_page.dart';
+import 'flop_page.dart';
 import 'my_app_state.dart';
 import 'participants_page.dart';
 import 'preflop_page.dart';
@@ -54,6 +55,9 @@ class _MyHomePageState extends State<MyHomePage> {
             break;
           case 'preflop':
             page = PreflopPage();
+            break;
+          case 'flop':
+            page = FlopPage();
             break;
           default:
             throw UnimplementedError('no widget for $selectedIndex');
