@@ -32,13 +32,11 @@ class PreflopPage extends StatelessWidget {
         Text('Ante: ${state.ante}'),
         Text('${state.participants} handed'),
         state.preflop.length > 0
-            ? Row(children: [
-                Text("1"),
-                Text("round: ${state.preflop[0].round}"),
-                Text("position: ${state.preflop[0].position}"),
-                Text("action: ${state.preflop[0].action}"),
-                Text("amount: ${state.preflop[0].amount}")
-              ])
+            ? Column(
+                children: state.preflop.map((e) {
+                return Text(
+                    "round: ${e.round}, position: ${e.position}, action: ${e.action}, amount: ${e.amount}");
+              }).toList())
             : Container(),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -286,6 +284,8 @@ class _RadioActionState extends State<RadioAction> {
           {required int amount, required int index}) {
         String position = _positions[_positions.length - index - 1];
 
+        print('_handlerは呼ばれている');
+
         setState(() {
           switch (position) {
             case 'BB':
@@ -468,8 +468,13 @@ class _RaisedAmountInputFieldState extends State<RaisedAmountInputField> {
     _handler = widget.handler;
     focusNode.addListener(() {
       if (!focusNode.hasFocus) {
-        _handler(
-            amount: int.parse(_controller.value.toString()), index: _index);
+        print('ここにはきてる');
+        try {
+          int amount = int.parse(_controller.text);
+          _handler(amount: amount, index: _index);
+        } on FormatException {
+          print("FormatException: ${_controller.text} が数字じゃない");
+        }
       }
     });
   }
@@ -493,6 +498,7 @@ class _RaisedAmountInputFieldState extends State<RaisedAmountInputField> {
         labelText: 'raise額を入力',
         border: OutlineInputBorder(),
       ),
+      focusNode: focusNode,
     );
   }
 }
