@@ -9,6 +9,9 @@ class ParticipantsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<MyAppState>(
         builder: (context, state, children) => Column(children: [
+              Text('Small Blind: ${state.smallBlind}'),
+              Text('Big Blind: ${state.bigBlind}'),
+              Text('Ante: ${state.ante}'),
               Text('参加人数'),
               NumberInputField(
                   label: '参加人数',
