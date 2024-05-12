@@ -163,8 +163,6 @@ class _RadioActionState extends State<RadioAction> {
           switch (position) {
             case 'BB':
               _bbSelectedAction = value;
-              // RadioButtonがraiseに切り替わったタイミングではpreflopアクションを記録しない
-              // Raise額が入力されたタイミングで行なう
               if (value != 'raise') {
                 state.updatePreflop(
                     round: 1,
@@ -267,7 +265,7 @@ class _RadioActionState extends State<RadioAction> {
               throw UnexpectedPositionError(
                   'unexpected position name is detected: $position');
           }
-          if (_positions.length > _lastHandled + 1) {
+          if (value != 'raise' && _positions.length > _lastHandled + 1) {
             _lastHandled += 1;
           }
         });
