@@ -94,6 +94,7 @@ class _RadioActionState extends State<RadioAction> {
   int _bbRaisedAmount = 0;
 
   int _lastHandled = 0;
+  int _round = 1;
 
   @override
   void initState() {
@@ -165,7 +166,7 @@ class _RadioActionState extends State<RadioAction> {
               _bbSelectedAction = value;
               if (value != 'raise') {
                 state.updatePreflop(
-                    round: 1,
+                    round: _round,
                     position: position,
                     action: _bbSelectedAction,
                     amount: _bbRaisedAmount);
@@ -176,7 +177,7 @@ class _RadioActionState extends State<RadioAction> {
               _sbSelectedAction = value;
               if (value != 'raise') {
                 state.updatePreflop(
-                    round: 1,
+                    round: _round,
                     position: position,
                     action: _sbSelectedAction,
                     amount: _sbRaisedAmount);
@@ -187,7 +188,7 @@ class _RadioActionState extends State<RadioAction> {
               _btnSelectedAction = value;
               if (value != 'raise') {
                 state.updatePreflop(
-                    round: 1,
+                    round: _round,
                     position: position,
                     action: _btnSelectedAction,
                     amount: _btnRaisedAmount);
@@ -199,7 +200,7 @@ class _RadioActionState extends State<RadioAction> {
 
               if (value != 'raise') {
                 state.updatePreflop(
-                    round: 1,
+                    round: _round,
                     position: position,
                     action: _coSelectedAction,
                     amount: _coRaisedAmount);
@@ -210,7 +211,7 @@ class _RadioActionState extends State<RadioAction> {
               _hjSelectedAction = value;
               if (value != 'raise') {
                 state.updatePreflop(
-                    round: 1,
+                    round: _round,
                     position: position,
                     action: _hjSelectedAction,
                     amount: _hjRaisedAmount);
@@ -221,7 +222,7 @@ class _RadioActionState extends State<RadioAction> {
               _ljSelectedAction = value;
               if (value != 'raise') {
                 state.updatePreflop(
-                    round: 1,
+                    round: _round,
                     position: position,
                     action: _ljSelectedAction,
                     amount: _ljRaisedAmount);
@@ -232,7 +233,7 @@ class _RadioActionState extends State<RadioAction> {
               _utg2SelectedAction = value;
               if (value != 'raise') {
                 state.updatePreflop(
-                    round: 1,
+                    round: _round,
                     position: position,
                     action: _utg2SelectedAction,
                     amount: _utg2RaisedAmount);
@@ -243,7 +244,7 @@ class _RadioActionState extends State<RadioAction> {
               _utg1SelectedAction = value;
               if (value != 'raise') {
                 state.updatePreflop(
-                    round: 1,
+                    round: _round,
                     position: position,
                     action: _utg1SelectedAction,
                     amount: _utg1RaisedAmount);
@@ -254,7 +255,7 @@ class _RadioActionState extends State<RadioAction> {
               _utgSelectedAction = value;
               if (value != 'raise') {
                 state.updatePreflop(
-                    round: 1,
+                    round: _round,
                     position: position,
                     action: _utgSelectedAction,
                     amount: _utgRaisedAmount);
@@ -265,8 +266,13 @@ class _RadioActionState extends State<RadioAction> {
               throw UnexpectedPositionError(
                   'unexpected position name is detected: $position');
           }
-          if (value != 'raise' && _positions.length > _lastHandled + 1) {
-            _lastHandled += 1;
+          if (value != 'raise') {
+            if (_positions.length > _lastHandled + 1) {
+              _lastHandled += 1;
+            } else if (_positions.length == _lastHandled + 1) {
+              _lastHandled = 0;
+              _round += 1;
+            }
           }
         });
       }
@@ -280,7 +286,7 @@ class _RadioActionState extends State<RadioAction> {
             case 'BB':
               _bbRaisedAmount = amount;
               state.updatePreflop(
-                  round: 1,
+                  round: _round,
                   position: position,
                   action: _bbSelectedAction,
                   amount: _bbRaisedAmount);
@@ -289,7 +295,7 @@ class _RadioActionState extends State<RadioAction> {
             case 'SB':
               _sbRaisedAmount = amount;
               state.updatePreflop(
-                  round: 1,
+                  round: _round,
                   position: position,
                   action: _sbSelectedAction,
                   amount: _sbRaisedAmount);
@@ -298,7 +304,7 @@ class _RadioActionState extends State<RadioAction> {
             case 'BTN':
               _btnRaisedAmount = amount;
               state.updatePreflop(
-                  round: 1,
+                  round: _round,
                   position: position,
                   action: _btnSelectedAction,
                   amount: _btnRaisedAmount);
@@ -307,7 +313,7 @@ class _RadioActionState extends State<RadioAction> {
             case 'CO':
               _coRaisedAmount = amount;
               state.updatePreflop(
-                  round: 1,
+                  round: _round,
                   position: position,
                   action: _coSelectedAction,
                   amount: _coRaisedAmount);
@@ -316,7 +322,7 @@ class _RadioActionState extends State<RadioAction> {
             case 'HJ':
               _hjRaisedAmount = amount;
               state.updatePreflop(
-                  round: 1,
+                  round: _round,
                   position: position,
                   action: _hjSelectedAction,
                   amount: _hjRaisedAmount);
@@ -325,7 +331,7 @@ class _RadioActionState extends State<RadioAction> {
             case 'LJ':
               _ljRaisedAmount = amount;
               state.updatePreflop(
-                  round: 1,
+                  round: _round,
                   position: position,
                   action: _ljSelectedAction,
                   amount: _ljRaisedAmount);
@@ -334,7 +340,7 @@ class _RadioActionState extends State<RadioAction> {
             case 'UTG+2':
               _utg2RaisedAmount = amount;
               state.updatePreflop(
-                  round: 1,
+                  round: _round,
                   position: position,
                   action: _utg2SelectedAction,
                   amount: _utg2RaisedAmount);
@@ -343,7 +349,7 @@ class _RadioActionState extends State<RadioAction> {
             case 'UTG+1':
               _utg1RaisedAmount = amount;
               state.updatePreflop(
-                  round: 1,
+                  round: _round,
                   position: position,
                   action: _utg1SelectedAction,
                   amount: _utg1RaisedAmount);
@@ -352,7 +358,7 @@ class _RadioActionState extends State<RadioAction> {
             case 'UTG':
               _utgRaisedAmount = amount;
               state.updatePreflop(
-                  round: 1,
+                  round: _round,
                   position: position,
                   action: _utgSelectedAction,
                   amount: _utgRaisedAmount);
@@ -364,6 +370,9 @@ class _RadioActionState extends State<RadioAction> {
           }
           if (_positions.length > _lastHandled + 1) {
             _lastHandled += 1;
+          } else if (_positions.length == _lastHandled + 1) {
+            _lastHandled = 0;
+            _round += 1;
           }
         });
       }
