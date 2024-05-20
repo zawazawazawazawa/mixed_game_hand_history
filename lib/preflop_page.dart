@@ -93,20 +93,21 @@ class _RadioActionState extends State<RadioAction> {
   int _sbRaisedAmount = 0;
   int _bbRaisedAmount = 0;
 
-  int _lastHandled = 0;
+  int _currentTargetPosition = 0;
   int _round = 1;
 
   @override
   void initState() {
     super.initState();
     _positions = widget.positions;
+    _currentTargetPosition = _positions.length - 1;
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<MyAppState>(builder: (context, state, children) {
-      String? getActionStateFromIndex(int index) {
-        switch (_positions[_positions.length - index - 1]) {
+      String? getActionStateFromCurrentTargetPosition() {
+        switch (_positions[_currentTargetPosition]) {
           case 'BB':
             return _bbSelectedAction;
           case 'SB':
@@ -127,7 +128,7 @@ class _RadioActionState extends State<RadioAction> {
             return _utgSelectedAction;
           default:
             throw UnexpectedPositionError(
-                'unexpected position name is detected: ${_positions[_positions.length - _lastHandled - 1]}');
+                'unexpected position name is detected: ${_positions[_currentTargetPosition]}');
         }
       }
 
@@ -153,12 +154,12 @@ class _RadioActionState extends State<RadioAction> {
             return _utgRaisedAmount;
           default:
             throw UnexpectedPositionError(
-                'unexpected position name is detected: ${_positions[_positions.length - _lastHandled - 1]}');
+                'unexpected position name is detected: ${_positions[_currentTargetPosition]}');
         }
       }
 
-      void _handleRadioValueChange({String? value, required int index}) {
-        String position = _positions[_positions.length - index - 1];
+      void _handleRadioValueChange({String? value}) {
+        String position = _positions[_currentTargetPosition];
 
         setState(() {
           switch (position) {
@@ -266,20 +267,28 @@ class _RadioActionState extends State<RadioAction> {
               throw UnexpectedPositionError(
                   'unexpected position name is detected: $position');
           }
+
+          for (var i = 0; i < state.preflop.length; i++) {
+            print("round: ${state.preflop[i].round}");
+            print("position: ${state.preflop[i].position}");
+            print("action: ${state.preflop[i].action}");
+            print("amount: ${state.preflop[i].amount}");
+            print("currentTargetPosition: $_currentTargetPosition");
+          }
+
           if (value != 'raise') {
-            if (_positions.length > _lastHandled + 1) {
-              _lastHandled += 1;
-            } else if (_positions.length == _lastHandled + 1) {
-              _lastHandled = 0;
+            if (_currentTargetPosition > 0) {
+              _currentTargetPosition -= 1;
+            } else if (_currentTargetPosition == 0) {
+              _currentTargetPosition = _positions.length - 1;
               _round += 1;
             }
           }
         });
       }
 
-      void _handleRaisedAmountChange(
-          {required int amount, required int index}) {
-        String position = _positions[_positions.length - index - 1];
+      void _handleRaisedAmountChange({required int amount}) {
+        String position = _positions[_currentTargetPosition];
 
         setState(() {
           switch (position) {
@@ -368,85 +377,121 @@ class _RadioActionState extends State<RadioAction> {
               throw UnexpectedPositionError(
                   'unexpected position name is detected: $position');
           }
-          if (_positions.length > _lastHandled + 1) {
-            _lastHandled += 1;
-          } else if (_positions.length == _lastHandled + 1) {
-            _lastHandled = 0;
+
+          for (var i = 0; i < state.preflop.length; i++) {
+            print("round: ${state.preflop[i].round}");
+            print("position: ${state.preflop[i].position}");
+            print("action: ${state.preflop[i].action}");
+            print("amount: ${state.preflop[i].amount}");
+            print("currentTargetPosition: $_currentTargetPosition");
+          }
+
+          if (_currentTargetPosition > 0) {
+            _currentTargetPosition -= 1;
+          } else if (_currentTargetPosition == 0) {
+            _currentTargetPosition = _positions.length - 1;
             _round += 1;
           }
         });
       }
 
-      return Column(
-          children: List<Widget>.generate(_positions.length, (int index) {
-        return Visibility(
-          visible: index <= _lastHandled,
-          child: Column(
+      List<Widget> _widgets =
+          List<Widget>.generate(state.preflop.length, (int index) {
+        return Column(
+          children: [
+            Row(
+              children: [
+                Text(state.preflop[index].position),
+                Expanded(
+                  child: ListTile(
+                    title: Text('Raise'),
+                    leading: Radio<String>(
+                      value: 'raise',
+                      groupValue: state.preflop[index].action,
+                      onChanged: (value) {},
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ListTile(
+                    title: Text('Call'),
+                    leading: Radio<String>(
+                      value: 'call',
+                      groupValue: state.preflop[index].action,
+                      onChanged: (value) {},
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ListTile(
+                    title: Text('Fold'),
+                    leading: Radio<String>(
+                      value: 'fold',
+                      groupValue: state.preflop[index].action,
+                      onChanged: (value) {},
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ],
+        );
+      });
+
+      _widgets.add(Column(
+        children: [
+          Row(
             children: [
-              Row(
-                children: [
-                  Text(widget.positions[_positions.length - index - 1]),
-                  Expanded(
-                    child: ListTile(
-                      title: Text('Raise'),
-                      leading: Radio<String>(
-                        value: 'raise',
-                        groupValue: getActionStateFromIndex(index),
-                        onChanged: (String? value) {
-                          if (index == _lastHandled && value != null) {
-                            _handleRadioValueChange(value: value, index: index);
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: ListTile(
-                      title: Text('Call'),
-                      leading: Radio<String>(
-                        value: 'call',
-                        groupValue: getActionStateFromIndex(index),
-                        onChanged: (String? value) {
-                          if (index == _lastHandled && value != null) {
-                            _handleRadioValueChange(value: value, index: index);
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: ListTile(
-                      title: Text('Fold'),
-                      leading: Radio<String>(
-                        value: 'fold',
-                        groupValue: getActionStateFromIndex(index),
-                        onChanged: (String? value) {
-                          if (index == _lastHandled && value != null) {
-                            _handleRadioValueChange(value: value, index: index);
-                          }
-                        },
-                      ),
-                    ),
-                  )
-                ],
+              Text(_positions[_currentTargetPosition]),
+              Expanded(
+                child: ListTile(
+                  title: Text('Raise'),
+                  leading: Radio<String>(
+                      value: 'raise',
+                      groupValue: getActionStateFromCurrentTargetPosition(),
+                      onChanged: (value) {
+                        _handleRadioValueChange(value: value);
+                      }),
+                ),
               ),
-              getActionStateFromIndex(index) == 'raise'
-                  ? RaisedAmountInputField(
-                      index: index, handler: _handleRaisedAmountChange)
-                  : Container()
+              Expanded(
+                child: ListTile(
+                  title: Text('Call'),
+                  leading: Radio<String>(
+                      value: 'call',
+                      groupValue: getActionStateFromCurrentTargetPosition(),
+                      onChanged: (value) {
+                        _handleRadioValueChange(value: value);
+                      }),
+                ),
+              ),
+              Expanded(
+                child: ListTile(
+                  title: Text('Fold'),
+                  leading: Radio<String>(
+                      value: 'fold',
+                      groupValue: getActionStateFromCurrentTargetPosition(),
+                      onChanged: (value) {
+                        _handleRadioValueChange(value: value);
+                      }),
+                ),
+              ),
             ],
           ),
-        );
-      }));
+          getActionStateFromCurrentTargetPosition() == 'raise'
+              ? RaisedAmountInputField(handler: _handleRaisedAmountChange)
+              : Container()
+        ],
+      ));
+      return Column(children: _widgets);
     });
   }
 }
 
 class RaisedAmountInputField extends StatefulWidget {
-  final int index;
-  final void Function({required int amount, required int index}) handler;
+  final void Function({required int amount}) handler;
 
-  RaisedAmountInputField({required this.index, required this.handler});
+  RaisedAmountInputField({required this.handler});
 
   @override
   _RaisedAmountInputFieldState createState() => _RaisedAmountInputFieldState();
@@ -454,21 +499,19 @@ class RaisedAmountInputField extends StatefulWidget {
 
 class _RaisedAmountInputFieldState extends State<RaisedAmountInputField> {
   final TextEditingController _controller = TextEditingController();
-  late int _index;
-  late void Function({required int amount, required int index}) _handler;
+  late void Function({required int amount}) _handler;
 
   FocusNode focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    _index = widget.index;
     _handler = widget.handler;
     focusNode.addListener(() {
       if (!focusNode.hasFocus) {
         try {
           int amount = int.parse(_controller.text);
-          _handler(amount: amount, index: _index);
+          _handler(amount: amount);
         } on FormatException {
           print("FormatException: ${_controller.text} が数字じゃない");
         }
