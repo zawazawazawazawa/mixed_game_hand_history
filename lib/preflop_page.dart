@@ -106,8 +106,8 @@ class _RadioActionState extends State<RadioAction> {
   @override
   Widget build(BuildContext context) {
     return Consumer<MyAppState>(builder: (context, state, children) {
-      String? getActionStateFromCurrentTargetPosition() {
-        switch (_positions[_currentTargetPosition]) {
+      String? getActionStateFromCurrentTargetPosition({index: int}) {
+        switch (_positions[index]) {
           case 'BB':
             return _bbSelectedAction;
           case 'SB':
@@ -434,6 +434,9 @@ class _RadioActionState extends State<RadioAction> {
                 )
               ],
             ),
+            state.preflop[index].action == 'raise'
+                ? Text("amount: ${state.preflop[index].amount}")
+                : Container()
           ],
         );
       });
@@ -448,7 +451,8 @@ class _RadioActionState extends State<RadioAction> {
                   title: Text('Raise'),
                   leading: Radio<String>(
                       value: 'raise',
-                      groupValue: getActionStateFromCurrentTargetPosition(),
+                      groupValue: getActionStateFromCurrentTargetPosition(
+                          index: _currentTargetPosition),
                       onChanged: (value) {
                         _handleRadioValueChange(value: value);
                       }),
@@ -459,7 +463,8 @@ class _RadioActionState extends State<RadioAction> {
                   title: Text('Call'),
                   leading: Radio<String>(
                       value: 'call',
-                      groupValue: getActionStateFromCurrentTargetPosition(),
+                      groupValue: getActionStateFromCurrentTargetPosition(
+                          index: _currentTargetPosition),
                       onChanged: (value) {
                         _handleRadioValueChange(value: value);
                       }),
@@ -470,7 +475,8 @@ class _RadioActionState extends State<RadioAction> {
                   title: Text('Fold'),
                   leading: Radio<String>(
                       value: 'fold',
-                      groupValue: getActionStateFromCurrentTargetPosition(),
+                      groupValue: getActionStateFromCurrentTargetPosition(
+                          index: _currentTargetPosition),
                       onChanged: (value) {
                         _handleRadioValueChange(value: value);
                       }),
@@ -478,7 +484,9 @@ class _RadioActionState extends State<RadioAction> {
               ),
             ],
           ),
-          getActionStateFromCurrentTargetPosition() == 'raise'
+          getActionStateFromCurrentTargetPosition(
+                      index: _currentTargetPosition) ==
+                  'raise'
               ? RaisedAmountInputField(handler: _handleRaisedAmountChange)
               : Container()
         ],
