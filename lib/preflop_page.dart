@@ -33,7 +33,12 @@ class PreflopPage extends StatelessWidget {
         Text('${state.participants} handed'),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[RadioAction(positions: positions)],
+          children: <Widget>[
+            RadioAction(
+              positions: positions,
+              bigBlindAmount: state.bigBlind,
+            )
+          ],
         ),
         ElevatedButton(
           onPressed: () {
@@ -63,8 +68,9 @@ class PreflopPage extends StatelessWidget {
 
 class RadioAction extends StatefulWidget {
   final List<String> positions;
+  final int bigBlindAmount;
 
-  RadioAction({required this.positions});
+  RadioAction({required this.positions, required this.bigBlindAmount});
 
   @override
   _RadioActionState createState() => _RadioActionState();
@@ -72,6 +78,7 @@ class RadioAction extends StatefulWidget {
 
 class _RadioActionState extends State<RadioAction> {
   late List<String> _positions;
+  late int _bigBlindAmount;
 
   String? _utgSelectedAction = null;
   String? _utg1SelectedAction = null;
@@ -96,11 +103,15 @@ class _RadioActionState extends State<RadioAction> {
   int _currentTargetPosition = 0;
   int _round = 1;
 
+  int _callAmount = 0;
+
   @override
   void initState() {
     super.initState();
     _positions = widget.positions;
+    _bigBlindAmount = widget.bigBlindAmount;
     _currentTargetPosition = _positions.length - 1;
+    _callAmount = _bigBlindAmount;
   }
 
   @override
@@ -165,103 +176,156 @@ class _RadioActionState extends State<RadioAction> {
           switch (position) {
             case 'BB':
               _bbSelectedAction = value;
-              if (value != 'raise') {
+              if (value == 'call') {
+                _bbRaisedAmount = _callAmount;
                 state.updatePreflop(
                     round: _round,
                     position: position,
                     action: _bbSelectedAction,
                     amount: _bbRaisedAmount);
+              } else if (value == 'fold') {
+                state.updatePreflop(
+                    round: _round,
+                    position: position,
+                    action: _bbSelectedAction,
+                    amount: null);
               }
               break;
-
             case 'SB':
               _sbSelectedAction = value;
-              if (value != 'raise') {
+              if (value == 'call') {
+                _sbRaisedAmount = _callAmount;
                 state.updatePreflop(
                     round: _round,
                     position: position,
                     action: _sbSelectedAction,
                     amount: _sbRaisedAmount);
+              } else if (value == 'fold') {
+                state.updatePreflop(
+                    round: _round,
+                    position: position,
+                    action: _sbSelectedAction,
+                    amount: null);
               }
-
               break;
             case 'BTN':
               _btnSelectedAction = value;
-              if (value != 'raise') {
+              if (value == 'call') {
+                _btnRaisedAmount = _callAmount;
                 state.updatePreflop(
                     round: _round,
                     position: position,
                     action: _btnSelectedAction,
                     amount: _btnRaisedAmount);
+              } else if (value == 'fold') {
+                state.updatePreflop(
+                    round: _round,
+                    position: position,
+                    action: _btnSelectedAction,
+                    amount: null);
               }
-
               break;
             case 'CO':
               _coSelectedAction = value;
-
-              if (value != 'raise') {
+              if (value == 'call') {
+                _coRaisedAmount = _callAmount;
                 state.updatePreflop(
                     round: _round,
                     position: position,
                     action: _coSelectedAction,
                     amount: _coRaisedAmount);
+              } else if (value == 'fold') {
+                state.updatePreflop(
+                    round: _round,
+                    position: position,
+                    action: _coSelectedAction,
+                    amount: null);
               }
-
               break;
             case 'HJ':
               _hjSelectedAction = value;
-              if (value != 'raise') {
+              if (value == 'call') {
+                _hjRaisedAmount = _callAmount;
                 state.updatePreflop(
                     round: _round,
                     position: position,
                     action: _hjSelectedAction,
                     amount: _hjRaisedAmount);
+              } else if (value == 'fold') {
+                state.updatePreflop(
+                    round: _round,
+                    position: position,
+                    action: _hjSelectedAction,
+                    amount: null);
               }
-
               break;
             case 'LJ':
               _ljSelectedAction = value;
-              if (value != 'raise') {
+              if (value == 'call') {
+                _ljRaisedAmount = _callAmount;
                 state.updatePreflop(
                     round: _round,
                     position: position,
                     action: _ljSelectedAction,
                     amount: _ljRaisedAmount);
+              } else if (value == 'fold') {
+                state.updatePreflop(
+                    round: _round,
+                    position: position,
+                    action: _ljSelectedAction,
+                    amount: null);
               }
-
               break;
             case 'UTG+2':
               _utg2SelectedAction = value;
-              if (value != 'raise') {
+              if (value == 'call') {
+                _utg2RaisedAmount = _callAmount;
                 state.updatePreflop(
                     round: _round,
                     position: position,
                     action: _utg2SelectedAction,
                     amount: _utg2RaisedAmount);
+              } else if (value == 'fold') {
+                state.updatePreflop(
+                    round: _round,
+                    position: position,
+                    action: _utg2SelectedAction,
+                    amount: null);
               }
-
               break;
             case 'UTG+1':
               _utg1SelectedAction = value;
-              if (value != 'raise') {
+              if (value == 'call') {
+                _utg1RaisedAmount = _callAmount;
                 state.updatePreflop(
                     round: _round,
                     position: position,
                     action: _utg1SelectedAction,
                     amount: _utg1RaisedAmount);
+              } else if (value == 'fold') {
+                state.updatePreflop(
+                    round: _round,
+                    position: position,
+                    action: _utg1SelectedAction,
+                    amount: null);
               }
-
               break;
             case 'UTG':
               _utgSelectedAction = value;
-              if (value != 'raise') {
+              if (value == 'call') {
+                _utgRaisedAmount = _callAmount;
                 state.updatePreflop(
                     round: _round,
                     position: position,
                     action: _utgSelectedAction,
                     amount: _utgRaisedAmount);
+              } else if (value == 'fold') {
+                state.updatePreflop(
+                    round: _round,
+                    position: position,
+                    action: _utgSelectedAction,
+                    amount: null);
               }
-
               break;
             default:
               throw UnexpectedPositionError(
@@ -377,6 +441,8 @@ class _RadioActionState extends State<RadioAction> {
               throw UnexpectedPositionError(
                   'unexpected position name is detected: $position');
           }
+
+          _callAmount = amount;
 
           for (var i = 0; i < state.preflop.length; i++) {
             print("round: ${state.preflop[i].round}");
