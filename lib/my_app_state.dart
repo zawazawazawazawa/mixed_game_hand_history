@@ -7,19 +7,6 @@ class MyAppState extends ChangeNotifier {
   int _ante = 100;
   int _participants = 2;
   List<PreFlopAction> _preflop = [];
-  // {
-  //    round: 1,
-  //    position: utg,
-  //    action: raise,
-  //    amount: 300
-  // },
-  // {
-  //    round: 1,
-  //    position: HJ,
-  //    action: fold,
-  //    amount: null
-  // }
-  //
 
   String get selectedIndex => _selectedIndex;
   int get bigBlind => _bigBlind;

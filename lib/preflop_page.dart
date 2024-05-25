@@ -90,15 +90,15 @@ class _RadioActionState extends State<RadioAction> {
   String? _sbSelectedAction = null;
   String? _bbSelectedAction = null;
 
-  int _utgRaisedAmount = 0;
-  int _utg1RaisedAmount = 0;
-  int _utg2RaisedAmount = 0;
-  int _ljRaisedAmount = 0;
-  int _hjRaisedAmount = 0;
-  int _coRaisedAmount = 0;
-  int _btnRaisedAmount = 0;
-  int _sbRaisedAmount = 0;
-  int _bbRaisedAmount = 0;
+  int? _utgRaisedAmount = null;
+  int? _utg1RaisedAmount = null;
+  int? _utg2RaisedAmount = null;
+  int? _ljRaisedAmount = null;
+  int? _hjRaisedAmount = null;
+  int? _coRaisedAmount = null;
+  int? _btnRaisedAmount = null;
+  int? _sbRaisedAmount = null;
+  int? _bbRaisedAmount = null;
 
   int _currentTargetPosition = 0;
   int _round = 1;
@@ -143,7 +143,7 @@ class _RadioActionState extends State<RadioAction> {
         }
       }
 
-      int getRaisedAmountFromIndex(int index) {
+      int? getRaisedAmountFromIndex(int index) {
         switch (_positions[_positions.length - index - 1]) {
           case 'BB':
             return _bbRaisedAmount;
@@ -169,6 +169,42 @@ class _RadioActionState extends State<RadioAction> {
         }
       }
 
+      bool isRemainingAction() {
+        // RaiseAmountに一つでもnullがあればまだactionしてない人がいる
+        List<int?> amounts = [
+          _bbRaisedAmount,
+          _sbRaisedAmount,
+          _btnRaisedAmount,
+          _coRaisedAmount,
+          _hjRaisedAmount,
+          _ljRaisedAmount,
+          _utg2RaisedAmount,
+          _utg1RaisedAmount,
+          _utgRaisedAmount
+        ];
+
+        List<int?> actual_players_amoounts =
+            amounts.sublist(0, _positions.length);
+
+        var null_action_is_included =
+            actual_players_amoounts.any((element) => element == null);
+
+        if (null_action_is_included) {
+          return true;
+        }
+
+        // RaiseAmountにnullがなく、0ではない人のamountがすべて等しければこのroundは終了している
+        List<int?> raised_or_called_players_amounts = [];
+        raised_or_called_players_amounts =
+            actual_players_amoounts.where((e) => e != 0).toList();
+        var all_active_player_raised_same_amount =
+            raised_or_called_players_amounts.every(
+                (element) => element == raised_or_called_players_amounts[0]);
+
+        // 全員の金額が揃っているなら、Actionは残っていない
+        return !all_active_player_raised_same_amount;
+      }
+
       void _handleRadioValueChange({String? value}) {
         String position = _positions[_currentTargetPosition];
 
@@ -184,11 +220,12 @@ class _RadioActionState extends State<RadioAction> {
                     action: _bbSelectedAction,
                     amount: _bbRaisedAmount);
               } else if (value == 'fold') {
+                _bbRaisedAmount = 0;
                 state.updatePreflop(
                     round: _round,
                     position: position,
                     action: _bbSelectedAction,
-                    amount: null);
+                    amount: _bbRaisedAmount);
               }
               break;
             case 'SB':
@@ -201,11 +238,12 @@ class _RadioActionState extends State<RadioAction> {
                     action: _sbSelectedAction,
                     amount: _sbRaisedAmount);
               } else if (value == 'fold') {
+                _sbRaisedAmount = 0;
                 state.updatePreflop(
                     round: _round,
                     position: position,
                     action: _sbSelectedAction,
-                    amount: null);
+                    amount: _sbRaisedAmount);
               }
               break;
             case 'BTN':
@@ -218,11 +256,12 @@ class _RadioActionState extends State<RadioAction> {
                     action: _btnSelectedAction,
                     amount: _btnRaisedAmount);
               } else if (value == 'fold') {
+                _btnRaisedAmount = 0;
                 state.updatePreflop(
                     round: _round,
                     position: position,
                     action: _btnSelectedAction,
-                    amount: null);
+                    amount: _btnRaisedAmount);
               }
               break;
             case 'CO':
@@ -235,11 +274,12 @@ class _RadioActionState extends State<RadioAction> {
                     action: _coSelectedAction,
                     amount: _coRaisedAmount);
               } else if (value == 'fold') {
+                _coRaisedAmount = 0;
                 state.updatePreflop(
                     round: _round,
                     position: position,
                     action: _coSelectedAction,
-                    amount: null);
+                    amount: _coRaisedAmount);
               }
               break;
             case 'HJ':
@@ -252,11 +292,12 @@ class _RadioActionState extends State<RadioAction> {
                     action: _hjSelectedAction,
                     amount: _hjRaisedAmount);
               } else if (value == 'fold') {
+                _hjRaisedAmount = 0;
                 state.updatePreflop(
                     round: _round,
                     position: position,
                     action: _hjSelectedAction,
-                    amount: null);
+                    amount: _hjRaisedAmount);
               }
               break;
             case 'LJ':
@@ -269,11 +310,12 @@ class _RadioActionState extends State<RadioAction> {
                     action: _ljSelectedAction,
                     amount: _ljRaisedAmount);
               } else if (value == 'fold') {
+                _ljRaisedAmount = 0;
                 state.updatePreflop(
                     round: _round,
                     position: position,
                     action: _ljSelectedAction,
-                    amount: null);
+                    amount: _ljRaisedAmount);
               }
               break;
             case 'UTG+2':
@@ -286,11 +328,12 @@ class _RadioActionState extends State<RadioAction> {
                     action: _utg2SelectedAction,
                     amount: _utg2RaisedAmount);
               } else if (value == 'fold') {
+                _utg2RaisedAmount = 0;
                 state.updatePreflop(
                     round: _round,
                     position: position,
                     action: _utg2SelectedAction,
-                    amount: null);
+                    amount: _utg2RaisedAmount);
               }
               break;
             case 'UTG+1':
@@ -303,11 +346,12 @@ class _RadioActionState extends State<RadioAction> {
                     action: _utg1SelectedAction,
                     amount: _utg1RaisedAmount);
               } else if (value == 'fold') {
+                _utg1RaisedAmount = 0;
                 state.updatePreflop(
                     round: _round,
                     position: position,
                     action: _utg1SelectedAction,
-                    amount: null);
+                    amount: _utg1RaisedAmount);
               }
               break;
             case 'UTG':
@@ -320,11 +364,12 @@ class _RadioActionState extends State<RadioAction> {
                     action: _utgSelectedAction,
                     amount: _utgRaisedAmount);
               } else if (value == 'fold') {
+                _utgRaisedAmount = 0;
                 state.updatePreflop(
                     round: _round,
                     position: position,
                     action: _utgSelectedAction,
-                    amount: null);
+                    amount: _utgRaisedAmount);
               }
               break;
             default:
@@ -338,6 +383,11 @@ class _RadioActionState extends State<RadioAction> {
             print("action: ${state.preflop[i].action}");
             print("amount: ${state.preflop[i].amount}");
             print("currentTargetPosition: $_currentTargetPosition");
+          }
+
+          if (!isRemainingAction()) {
+            // flop pageへ
+            state.updateSelectedIndex('flop');
           }
 
           if (value != 'raise') {
@@ -450,6 +500,11 @@ class _RadioActionState extends State<RadioAction> {
             print("action: ${state.preflop[i].action}");
             print("amount: ${state.preflop[i].amount}");
             print("currentTargetPosition: $_currentTargetPosition");
+          }
+
+          if (!isRemainingAction()) {
+            // flop pageへ
+            state.updateSelectedIndex('flop');
           }
 
           if (_currentTargetPosition > 0) {
