@@ -26,41 +26,8 @@ class PreflopPage extends StatelessWidget {
         positions = positions.sublist(0, state.participants);
       }
 
-      return Column(children: [
-        Text('Small Blind: ${state.smallBlind}'),
-        Text('Big Blind: ${state.bigBlind}'),
-        Text('Ante: ${state.ante}'),
-        Text('${state.participants} handed'),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            RadioAction(
-              positions: positions,
-              bigBlindAmount: state.bigBlind,
-            )
-          ],
-        ),
-        ElevatedButton(
-          onPressed: () {
-            // blindページへ遷移
-            state.updateSelectedIndex('participants');
-          },
-          child: Text('Blindに戻る'),
-        ),
-        SizedBox(height: 20),
-        ElevatedButton(
-          onPressed: () {
-            // TO BE IMPLEMENTED
-          },
-          child: Text('アクションを最初から登録し直す'),
-        ),
-        SizedBox(height: 20),
-        ElevatedButton(
-          onPressed: () {
-            state.updateSelectedIndex('flop');
-          },
-          child: Text('Flopを入力'),
-        ),
+      return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        RadioAction(positions: positions, bigBlindAmount: state.bigBlind)
       ]);
     });
   }
@@ -78,7 +45,6 @@ class RadioAction extends StatefulWidget {
 
 class _RadioActionState extends State<RadioAction> {
   late List<String> _positions;
-  late int _bigBlindAmount;
 
   String? _utgSelectedAction = null;
   String? _utg1SelectedAction = null;
@@ -102,21 +68,45 @@ class _RadioActionState extends State<RadioAction> {
 
   int _currentTargetPosition = 0;
   int _round = 1;
-
   int _callAmount = 0;
 
   @override
   void initState() {
     super.initState();
     _positions = widget.positions;
-    _bigBlindAmount = widget.bigBlindAmount;
+    _callAmount = widget.bigBlindAmount;
     _currentTargetPosition = _positions.length - 1;
-    _callAmount = _bigBlindAmount;
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<MyAppState>(builder: (context, state, children) {
+      void resetLocalState() {
+        _utgSelectedAction = null;
+        _utg1SelectedAction = null;
+        _utg2SelectedAction = null;
+        _ljSelectedAction = null;
+        _hjSelectedAction = null;
+        _coSelectedAction = null;
+        _btnSelectedAction = null;
+        _sbSelectedAction = null;
+        _bbSelectedAction = null;
+
+        _utgRaisedAmount = null;
+        _utg1RaisedAmount = null;
+        _utg2RaisedAmount = null;
+        _ljRaisedAmount = null;
+        _hjRaisedAmount = null;
+        _coRaisedAmount = null;
+        _btnRaisedAmount = null;
+        _sbRaisedAmount = null;
+        _bbRaisedAmount = null;
+
+        _currentTargetPosition = _positions.length - 1;
+        _round = 1;
+        _callAmount = state.bigBlind;
+      }
+
       String? getActionStateFromCurrentTargetPosition({index: int}) {
         switch (_positions[index]) {
           case 'BB':
@@ -377,14 +367,6 @@ class _RadioActionState extends State<RadioAction> {
                   'unexpected position name is detected: $position');
           }
 
-          for (var i = 0; i < state.preflop.length; i++) {
-            print("round: ${state.preflop[i].round}");
-            print("position: ${state.preflop[i].position}");
-            print("action: ${state.preflop[i].action}");
-            print("amount: ${state.preflop[i].amount}");
-            print("currentTargetPosition: $_currentTargetPosition");
-          }
-
           if (!isRemainingAction()) {
             // flop pageへ
             state.updateSelectedIndex('flop');
@@ -493,14 +475,6 @@ class _RadioActionState extends State<RadioAction> {
           }
 
           _callAmount = amount;
-
-          for (var i = 0; i < state.preflop.length; i++) {
-            print("round: ${state.preflop[i].round}");
-            print("position: ${state.preflop[i].position}");
-            print("action: ${state.preflop[i].action}");
-            print("amount: ${state.preflop[i].amount}");
-            print("currentTargetPosition: $_currentTargetPosition");
-          }
 
           if (!isRemainingAction()) {
             // flop pageへ
@@ -612,7 +586,38 @@ class _RadioActionState extends State<RadioAction> {
               : Container()
         ],
       ));
-      return Column(children: _widgets);
+
+      return Column(children: [
+        Text('Small Blind: ${state.smallBlind}'),
+        Text('Big Blind: ${state.bigBlind}'),
+        Text('Ante: ${state.ante}'),
+        Text('${state.participants} handed'),
+        Column(children: _widgets),
+        ElevatedButton(
+          onPressed: () {
+            resetLocalState();
+            state.resetPreflop();
+            // blindページへ遷移
+            state.updateSelectedIndex('participants');
+          },
+          child: Text('Blindに戻る'),
+        ),
+        SizedBox(height: 20),
+        ElevatedButton(
+          onPressed: () {
+            resetLocalState();
+            state.resetPreflop();
+          },
+          child: Text('アクションを最初から登録し直す'),
+        ),
+        SizedBox(height: 20),
+        ElevatedButton(
+          onPressed: () {
+            state.updateSelectedIndex('flop');
+          },
+          child: Text('Flopを入力'),
+        ),
+      ]);
     });
   }
 }

@@ -59,6 +59,11 @@ class MyAppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void resetPreflop() {
+    _preflop = [];
+    notifyListeners();
+  }
+
   getProperty(String key) {
     switch (key) {
       case 'bigBlind':
