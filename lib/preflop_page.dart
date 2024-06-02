@@ -494,9 +494,10 @@ class _RadioActionState extends State<RadioAction> {
           List<Widget>.generate(state.preflop.length, (int index) {
         return Column(
           children: [
+            SizedBox(height: 20),
+            Text(state.preflop[index].position),
             Row(
               children: [
-                Text(state.preflop[index].position),
                 Expanded(
                   child: ListTile(
                     title: Text('Raise'),
@@ -538,9 +539,10 @@ class _RadioActionState extends State<RadioAction> {
 
       _widgets.add(Column(
         children: [
+          SizedBox(height: 20),
+          Text(_positions[_currentTargetPosition]),
           Row(
             children: [
-              Text(_positions[_currentTargetPosition]),
               Expanded(
                 child: ListTile(
                   title: Text('Raise'),
@@ -587,37 +589,39 @@ class _RadioActionState extends State<RadioAction> {
         ],
       ));
 
-      return Column(children: [
-        Text('Small Blind: ${state.smallBlind}'),
-        Text('Big Blind: ${state.bigBlind}'),
-        Text('Ante: ${state.ante}'),
-        Text('${state.participants} handed'),
-        Column(children: _widgets),
-        ElevatedButton(
-          onPressed: () {
-            resetLocalState();
-            state.resetPreflop();
-            // blindページへ遷移
-            state.updateSelectedIndex('participants');
-          },
-          child: Text('Blindに戻る'),
-        ),
-        SizedBox(height: 20),
-        ElevatedButton(
-          onPressed: () {
-            resetLocalState();
-            state.resetPreflop();
-          },
-          child: Text('アクションを最初から登録し直す'),
-        ),
-        SizedBox(height: 20),
-        ElevatedButton(
-          onPressed: () {
-            state.updateSelectedIndex('flop');
-          },
-          child: Text('Flopを入力'),
-        ),
-      ]);
+      return SingleChildScrollView(
+        child: Column(children: [
+          Text('Small Blind: ${state.smallBlind}'),
+          Text('Big Blind: ${state.bigBlind}'),
+          Text('Ante: ${state.ante}'),
+          Text('${state.participants} handed'),
+          Column(children: _widgets),
+          ElevatedButton(
+            onPressed: () {
+              resetLocalState();
+              state.resetPreflop();
+              // blindページへ遷移
+              state.updateSelectedIndex('participants');
+            },
+            child: Text('Blindに戻る'),
+          ),
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              resetLocalState();
+              state.resetPreflop();
+            },
+            child: Text('アクションを最初から登録し直す'),
+          ),
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              state.updateSelectedIndex('flop');
+            },
+            child: Text('Flopを入力'),
+          ),
+        ]),
+      );
     });
   }
 }
