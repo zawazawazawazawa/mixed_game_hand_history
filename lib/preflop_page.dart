@@ -26,8 +26,10 @@ class PreflopPage extends StatelessWidget {
         positions = positions.sublist(0, state.participants);
       }
 
-      return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        RadioAction(positions: positions, bigBlindAmount: state.bigBlind)
+      return Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+        Expanded(
+            child: RadioAction(
+                positions: positions, bigBlindAmount: state.bigBlind))
       ]);
     });
   }
@@ -107,7 +109,7 @@ class _RadioActionState extends State<RadioAction> {
         _callAmount = state.bigBlind;
       }
 
-      String? getActionStateFromCurrentTargetPosition({index: int}) {
+      String? getActionStateFromIndex({required int index}) {
         switch (_positions[index]) {
           case 'BB':
             return _bbSelectedAction;
@@ -133,8 +135,34 @@ class _RadioActionState extends State<RadioAction> {
         }
       }
 
-      int? getRaisedAmountFromIndex(int index) {
-        switch (_positions[_positions.length - index - 1]) {
+      String? getActionStateFromPosition({required String position}) {
+        switch (position) {
+          case 'BB':
+            return _bbSelectedAction;
+          case 'SB':
+            return _sbSelectedAction;
+          case 'BTN':
+            return _btnSelectedAction;
+          case 'CO':
+            return _coSelectedAction;
+          case 'HJ':
+            return _hjSelectedAction;
+          case 'LJ':
+            return _ljSelectedAction;
+          case 'UTG+2':
+            return _utg2SelectedAction;
+          case 'UTG+1':
+            return _utg1SelectedAction;
+          case 'UTG':
+            return _utgSelectedAction;
+          default:
+            throw UnexpectedPositionError(
+                'unexpected position name is detected: ${_positions[_currentTargetPosition]}');
+        }
+      }
+
+      int? getRaisedAmountFromPosition({required String position}) {
+        switch (position) {
           case 'BB':
             return _bbRaisedAmount;
           case 'SB':
@@ -173,26 +201,47 @@ class _RadioActionState extends State<RadioAction> {
           _utgRaisedAmount
         ];
 
-        List<int?> actual_players_amoounts =
-            amounts.sublist(0, _positions.length);
+        List<int?> actualPlayersAmounts = amounts.sublist(0, _positions.length);
 
-        var null_action_is_included =
-            actual_players_amoounts.any((element) => element == null);
+        var isIncludedNullAction =
+            actualPlayersAmounts.any((element) => element == null);
 
-        if (null_action_is_included) {
+        if (isIncludedNullAction) {
           return true;
         }
 
         // RaiseAmountにnullがなく、0ではない人のamountがすべて等しければこのroundは終了している
-        List<int?> raised_or_called_players_amounts = [];
-        raised_or_called_players_amounts =
-            actual_players_amoounts.where((e) => e != 0).toList();
-        var all_active_player_raised_same_amount =
-            raised_or_called_players_amounts.every(
-                (element) => element == raised_or_called_players_amounts[0]);
+        List<int?> rasedOrCalledPalyersAmounts = [];
+        rasedOrCalledPalyersAmounts =
+            actualPlayersAmounts.where((e) => e != 0).toList();
+        var allActivePlayerRaisedSameAmount = rasedOrCalledPalyersAmounts
+            .every((element) => element == rasedOrCalledPalyersAmounts[0]);
 
         // 全員の金額が揃っているなら、Actionは残っていない
-        return !all_active_player_raised_same_amount;
+        return !allActivePlayerRaisedSameAmount;
+      }
+
+      int? nextTargetPositionIndex() {
+        String nextUnactionedPosition = _positions.reversed.firstWhere(
+            (position) =>
+                getActionStateFromPosition(position: position) == null,
+            orElse: () => 'none');
+
+        if (nextUnactionedPosition != 'none') {
+          return _positions.indexOf(nextUnactionedPosition);
+        } else {
+          String nextActionedPosition =
+              _positions.reversed.firstWhere((position) {
+            var amount = getRaisedAmountFromPosition(position: position);
+            return amount != null && amount > 0 && amount < _callAmount;
+          }, orElse: () => 'none');
+
+          if (nextActionedPosition != 'none') {
+            print(_positions);
+            print(nextActionedPosition);
+            return _positions.indexOf(nextActionedPosition);
+          }
+        }
       }
 
       void _handleRadioValueChange({String? value}) {
@@ -373,11 +422,16 @@ class _RadioActionState extends State<RadioAction> {
           }
 
           if (value != 'raise') {
+            // TODO: int?の型エラー回避してるが、良い方法を考える
             if (_currentTargetPosition > 0) {
-              _currentTargetPosition -= 1;
+              _currentTargetPosition = nextTargetPositionIndex() ?? 0;
+              print("==================");
+              print(_currentTargetPosition);
             } else if (_currentTargetPosition == 0) {
-              _currentTargetPosition = _positions.length - 1;
+              _currentTargetPosition = nextTargetPositionIndex() ?? 0;
               _round += 1;
+              print("@@@@@@@@@@@@@@@@@@@@@@");
+              print(_currentTargetPosition);
             }
           }
         });
@@ -481,11 +535,17 @@ class _RadioActionState extends State<RadioAction> {
             state.updateSelectedIndex('flop');
           }
 
+          // TODO: int?の型エラー回避してるが、良い方法を考える
+
           if (_currentTargetPosition > 0) {
-            _currentTargetPosition -= 1;
+            _currentTargetPosition = nextTargetPositionIndex() ?? 0;
+            print("!!!!!!!!!!!!!!!!!!!!!!!");
+            print(_currentTargetPosition);
           } else if (_currentTargetPosition == 0) {
-            _currentTargetPosition = _positions.length - 1;
+            _currentTargetPosition = nextTargetPositionIndex() ?? 0;
             _round += 1;
+            print("***************************");
+            print(_currentTargetPosition);
           }
         });
       }
@@ -548,7 +608,7 @@ class _RadioActionState extends State<RadioAction> {
                   title: Text('Raise'),
                   leading: Radio<String>(
                       value: 'raise',
-                      groupValue: getActionStateFromCurrentTargetPosition(
+                      groupValue: getActionStateFromIndex(
                           index: _currentTargetPosition),
                       onChanged: (value) {
                         _handleRadioValueChange(value: value);
@@ -560,7 +620,7 @@ class _RadioActionState extends State<RadioAction> {
                   title: Text('Call'),
                   leading: Radio<String>(
                       value: 'call',
-                      groupValue: getActionStateFromCurrentTargetPosition(
+                      groupValue: getActionStateFromIndex(
                           index: _currentTargetPosition),
                       onChanged: (value) {
                         _handleRadioValueChange(value: value);
@@ -572,7 +632,7 @@ class _RadioActionState extends State<RadioAction> {
                   title: Text('Fold'),
                   leading: Radio<String>(
                       value: 'fold',
-                      groupValue: getActionStateFromCurrentTargetPosition(
+                      groupValue: getActionStateFromIndex(
                           index: _currentTargetPosition),
                       onChanged: (value) {
                         _handleRadioValueChange(value: value);
@@ -581,9 +641,7 @@ class _RadioActionState extends State<RadioAction> {
               ),
             ],
           ),
-          getActionStateFromCurrentTargetPosition(
-                      index: _currentTargetPosition) ==
-                  'raise'
+          getActionStateFromIndex(index: _currentTargetPosition) == 'raise'
               ? RaisedAmountInputField(handler: _handleRaisedAmountChange)
               : Container()
         ],
