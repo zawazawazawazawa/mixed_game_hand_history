@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'my_app_state.dart';
-import 'number_input_field.dart';
+import '../my_app_state.dart';
+import '../widgets/number_input_field.dart';
 
 class ParticipantsPage extends StatelessWidget {
   @override

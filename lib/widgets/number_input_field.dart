@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 
-import 'my_app_state.dart'; // 循環参照になるかも？
+import '../my_app_state.dart';
 
 class NumberInputField extends StatefulWidget {
   final String label;
