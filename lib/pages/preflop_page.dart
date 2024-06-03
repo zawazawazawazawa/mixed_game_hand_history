@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 
 import '../my_app_state.dart';
+import '../utils/get_active_user_positions.dart';
 
 class UnexpectedPositionError extends Error {
   final String message;
@@ -16,15 +17,8 @@ class PreflopPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<MyAppState>(builder: (context, state, child) {
-      List<String> positions = ['BB', 'SB', 'BTN', 'CO', 'HJ', 'LJ', 'UTG'];
-
-      if (state.participants == 8) {
-        positions.insert(6, 'UTG+1');
-      } else if (state.participants == 9) {
-        positions.insertAll(6, ['UTG+2', 'UTG+1']);
-      } else {
-        positions = positions.sublist(0, state.participants);
-      }
+      List<String> positions =
+          getActiveUserPositions(participants: state.participants);
 
       return Column(mainAxisAlignment: MainAxisAlignment.start, children: [
         Expanded(
@@ -415,8 +409,8 @@ class _RadioActionState extends State<RadioAction> {
           }
 
           if (!isRemainingAction()) {
-            // flop pageへ
-            state.updateSelectedIndex('flop');
+            // hero pageへ
+            state.updateSelectedIndex('hero');
           }
 
           if (value != 'raise') {
@@ -525,8 +519,8 @@ class _RadioActionState extends State<RadioAction> {
           _callAmount = amount;
 
           if (!isRemainingAction()) {
-            // flop pageへ
-            state.updateSelectedIndex('flop');
+            // hero pageへ
+            state.updateSelectedIndex('hero');
           }
 
           // TODO: int?の型エラー回避してるが、良い方法を考える
@@ -670,9 +664,9 @@ class _RadioActionState extends State<RadioAction> {
           SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
-              state.updateSelectedIndex('flop');
+              state.updateSelectedIndex('hero');
             },
-            child: Text('Flopを入力'),
+            child: Text('Heroを入力'),
           ),
         ]),
       );
