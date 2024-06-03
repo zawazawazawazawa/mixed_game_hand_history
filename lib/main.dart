@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'pages/blind_page.dart';
 import 'pages/flop_page.dart';
+import 'pages/hero.dart';
 import 'pages/participants_page.dart';
 import 'pages/preflop_page.dart';
 import 'pages/start_page.dart';
@@ -56,6 +57,9 @@ class _MyHomePageState extends State<MyHomePage> {
             break;
           case 'preflop':
             page = PreflopPage();
+            break;
+          case 'hero':
+            page = HeroPage();
             break;
           case 'flop':
             page = FlopPage();
