@@ -237,8 +237,6 @@ class _RadioActionState extends State<RadioAction> {
           }, orElse: () => 'none');
 
           if (nextActionedPosition != 'none') {
-            print(_positions);
-            print(nextActionedPosition);
             return _positions.indexOf(nextActionedPosition);
           }
         }
@@ -425,13 +423,9 @@ class _RadioActionState extends State<RadioAction> {
             // TODO: int?の型エラー回避してるが、良い方法を考える
             if (_currentTargetPosition > 0) {
               _currentTargetPosition = nextTargetPositionIndex() ?? 0;
-              print("==================");
-              print(_currentTargetPosition);
             } else if (_currentTargetPosition == 0) {
               _currentTargetPosition = nextTargetPositionIndex() ?? 0;
               _round += 1;
-              print("@@@@@@@@@@@@@@@@@@@@@@");
-              print(_currentTargetPosition);
             }
           }
         });
@@ -539,13 +533,9 @@ class _RadioActionState extends State<RadioAction> {
 
           if (_currentTargetPosition > 0) {
             _currentTargetPosition = nextTargetPositionIndex() ?? 0;
-            print("!!!!!!!!!!!!!!!!!!!!!!!");
-            print(_currentTargetPosition);
           } else if (_currentTargetPosition == 0) {
             _currentTargetPosition = nextTargetPositionIndex() ?? 0;
             _round += 1;
-            print("***************************");
-            print(_currentTargetPosition);
           }
         });
       }
@@ -608,8 +598,10 @@ class _RadioActionState extends State<RadioAction> {
                   title: Text('Raise'),
                   leading: Radio<String>(
                       value: 'raise',
-                      groupValue: getActionStateFromIndex(
-                          index: _currentTargetPosition),
+                      groupValue: _round > 1
+                          ? null
+                          : getActionStateFromIndex(
+                              index: _currentTargetPosition),
                       onChanged: (value) {
                         _handleRadioValueChange(value: value);
                       }),
@@ -620,8 +612,10 @@ class _RadioActionState extends State<RadioAction> {
                   title: Text('Call'),
                   leading: Radio<String>(
                       value: 'call',
-                      groupValue: getActionStateFromIndex(
-                          index: _currentTargetPosition),
+                      groupValue: _round > 1
+                          ? null
+                          : getActionStateFromIndex(
+                              index: _currentTargetPosition),
                       onChanged: (value) {
                         _handleRadioValueChange(value: value);
                       }),
@@ -632,8 +626,10 @@ class _RadioActionState extends State<RadioAction> {
                   title: Text('Fold'),
                   leading: Radio<String>(
                       value: 'fold',
-                      groupValue: getActionStateFromIndex(
-                          index: _currentTargetPosition),
+                      groupValue: _round > 1
+                          ? null
+                          : getActionStateFromIndex(
+                              index: _currentTargetPosition),
                       onChanged: (value) {
                         _handleRadioValueChange(value: value);
                       }),
