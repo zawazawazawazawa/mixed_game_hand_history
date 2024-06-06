@@ -13,7 +13,22 @@ class HeroPage extends StatelessWidget {
 
       return Column(
         children: List<Widget>.generate(positions.length, (int index) {
-          return Text(positions[index]);
+          return Column(
+            children: [
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  state.updateHeroPosition(position: positions[index]);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: (state.heroPosition == positions[index])
+                      ? Colors.orange
+                      : Colors.blue,
+                ),
+                child: Text(positions[index]),
+              ),
+            ],
+          );
         }).reversed.toList(),
       );
     });

@@ -7,6 +7,7 @@ class MyAppState extends ChangeNotifier {
   int _ante = 100;
   int _participants = 2;
   List<PreFlopAction> _preflop = [];
+  String _heroPosition = '';
 
   String get selectedIndex => _selectedIndex;
   int get bigBlind => _bigBlind;
@@ -14,6 +15,7 @@ class MyAppState extends ChangeNotifier {
   int get ante => _ante;
   int get participants => _participants;
   List<PreFlopAction> get preflop => _preflop;
+  String get heroPosition => _heroPosition;
 
   void updateSelectedIndex(String inputValue) {
     _selectedIndex = inputValue;
@@ -61,6 +63,11 @@ class MyAppState extends ChangeNotifier {
 
   void resetPreflop() {
     _preflop = [];
+    notifyListeners();
+  }
+
+  void updateHeroPosition({required String position}) {
+    _heroPosition = position;
     notifyListeners();
   }
 
