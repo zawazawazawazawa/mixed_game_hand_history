@@ -110,3 +110,10 @@ class PreFlopAction {
     return data;
   }
 }
+
+class Card {
+  String suit;
+  String rank;
+
+  Card({required this.suit, required this.rank});
+}
