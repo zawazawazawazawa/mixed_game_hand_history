@@ -12,24 +12,32 @@ class HeroPage extends StatelessWidget {
           getActiveUserPositions(participants: state.participants);
 
       return Column(
-        children: List<Widget>.generate(positions.length, (int index) {
-          return Column(
-            children: [
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  state.updateHeroPosition(position: positions[index]);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: (state.heroPosition == positions[index])
-                      ? Colors.orange
-                      : Colors.blue,
-                ),
-                child: Text(positions[index]),
-              ),
-            ],
-          );
-        }).reversed.toList(),
+        children: [
+          Column(
+            children: List<Widget>.generate(positions.length, (int index) {
+              return Column(
+                children: [
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      state.updateHeroPosition(position: positions[index]);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: (state.heroPosition == positions[index])
+                          ? Colors.orange
+                          : Colors.blue,
+                    ),
+                    child: Text(positions[index]),
+                  ),
+                ],
+              );
+            }).reversed.toList(),
+          ),
+          if (state.heroPosition != '')
+            // To be implemented
+            // ハンドの選択widgetを出す
+            Text('not yet'),
+        ],
       );
     });
   }
