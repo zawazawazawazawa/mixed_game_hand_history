@@ -111,9 +111,16 @@ class PreFlopAction {
   }
 }
 
-class Card {
-  String suit;
-  String rank;
+class PlayingCard {
+  String? suit;
+  String? rank;
 
-  Card({required this.suit, required this.rank});
+  PlayingCard({required this.suit, required this.rank});
+
+  PlayingCard copyWith({String? suit, String? rank}) {
+    return PlayingCard(
+      suit: suit ?? this.suit,
+      rank: rank ?? this.rank,
+    );
+  }
 }

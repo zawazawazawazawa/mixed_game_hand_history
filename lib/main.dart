@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'pages/blind_page.dart';
 import 'pages/flop_page.dart';
-import 'pages/hero.dart';
+import 'pages/hero_page.dart';
 import 'pages/participants_page.dart';
 import 'pages/preflop_page.dart';
 import 'pages/start_page.dart';
