@@ -14,10 +14,6 @@ class _HeroPageState extends State<HeroPage> {
   List<PlayingCard> cards = List.filled(4, PlayingCard(suit: null, rank: null));
 
   void inputCard({required PlayingCard card, required int index}) {
-    print('きた');
-    print(card.rank);
-    print(card.suit);
-    print(index);
     setState(() {
       cards[index] = card;
     });
@@ -56,27 +52,54 @@ class _HeroPageState extends State<HeroPage> {
               children: [
                 SizedBox(height: 20),
                 Text("Hand"),
-                (cards[0].suit == null && cards[0].rank == null)
-                    ? InkWell(
-                        child: Card(
-                          child: Column(
-                            children: [
-                              Text('Card1'),
-                            ],
-                          ),
-                        ),
-                        onTap: () {
-                          showCardInputDialog(
-                              context: context,
-                              onSubmit: ({required PlayingCard card}) {
-                                inputCard(card: card, index: 0);
-                              });
-                        },
-                      )
-                    : Row(children: [
-                        Text("suit: ${cards[0].suit}"),
-                        Text("card: ${cards[0].rank}"),
-                      ])
+                Column(
+                  children: List.generate(4, (index) {
+                    return (cards[index].suit == null &&
+                            cards[index].rank == null)
+                        ? InkWell(
+                            child: Card(
+                              child: Column(
+                                children: [
+                                  Text("Card$index"),
+                                ],
+                              ),
+                            ),
+                            onTap: () {
+                              showCardInputDialog(
+                                  context: context,
+                                  onSubmit: ({required PlayingCard card}) {
+                                    inputCard(card: card, index: index);
+                                  });
+                            },
+                          )
+                        : Column(children: [
+                            Text("suit: ${cards[index].suit}"),
+                            SizedBox(width: 20),
+                            Text("card: ${cards[index].rank}"),
+                          ]);
+                  }),
+                ),
+                //(cards[0].suit == null && cards[0].rank == null)
+                //    ? InkWell(
+                //        child: Card(
+                //          child: Column(
+                //            children: [
+                //              Text('Card1'),
+                //            ],
+                //          ),
+                //        ),
+                //        onTap: () {
+                //          showCardInputDialog(
+                //              context: context,
+                //              onSubmit: ({required PlayingCard card}) {
+                //                inputCard(card: card, index: 0);
+                //              });
+                //        },
+                //      )
+                //    : Row(children: [
+                //        Text("suit: ${cards[0].suit}"),
+                //        Text("card: ${cards[0].rank}"),
+                //      ])
               ],
             ),
         ],

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../my_app_state.dart';
 import '../utils/show_card_input_dialog.dart';
