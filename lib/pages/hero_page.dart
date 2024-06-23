@@ -3,9 +3,26 @@ import 'package:provider/provider.dart';
 
 import '../my_app_state.dart';
 import '../utils/get_active_user_positions.dart';
-import '../widgets/card_input_field.dart';
+import '../utils/show_card_input_dialog.dart';
 
-class HeroPage extends StatelessWidget {
+class HeroPage extends StatefulWidget {
+  @override
+  State<HeroPage> createState() => _HeroPageState();
+}
+
+class _HeroPageState extends State<HeroPage> {
+  List<PlayingCard> cards = List.filled(4, PlayingCard(suit: null, rank: null));
+
+  void inputCard({required PlayingCard card, required int index}) {
+    print('きた');
+    print(card.rank);
+    print(card.suit);
+    print(index);
+    setState(() {
+      cards[index] = card;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<MyAppState>(builder: (context, state, children) {
@@ -38,10 +55,28 @@ class HeroPage extends StatelessWidget {
             Column(
               children: [
                 SizedBox(height: 20),
-                CardInputField(
-                  card: PlayingCard(rank: null, suit: null),
-                  handler: () {},
-                ),
+                Text("Hand"),
+                (cards[0].suit == null && cards[0].rank == null)
+                    ? InkWell(
+                        child: Card(
+                          child: Column(
+                            children: [
+                              Text('Card1'),
+                            ],
+                          ),
+                        ),
+                        onTap: () {
+                          showCardInputDialog(
+                              context: context,
+                              onSubmit: ({required PlayingCard card}) {
+                                inputCard(card: card, index: 0);
+                              });
+                        },
+                      )
+                    : Row(children: [
+                        Text("suit: ${cards[0].suit}"),
+                        Text("card: ${cards[0].rank}"),
+                      ])
               ],
             ),
         ],
