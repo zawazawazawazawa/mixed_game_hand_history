@@ -79,27 +79,6 @@ class _HeroPageState extends State<HeroPage> {
                           ]);
                   }),
                 ),
-                //(cards[0].suit == null && cards[0].rank == null)
-                //    ? InkWell(
-                //        child: Card(
-                //          child: Column(
-                //            children: [
-                //              Text('Card1'),
-                //            ],
-                //          ),
-                //        ),
-                //        onTap: () {
-                //          showCardInputDialog(
-                //              context: context,
-                //              onSubmit: ({required PlayingCard card}) {
-                //                inputCard(card: card, index: 0);
-                //              });
-                //        },
-                //      )
-                //    : Row(children: [
-                //        Text("suit: ${cards[0].suit}"),
-                //        Text("card: ${cards[0].rank}"),
-                //      ])
               ],
             ),
         ],

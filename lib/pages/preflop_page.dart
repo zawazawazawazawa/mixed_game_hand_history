@@ -14,6 +14,10 @@ class UnexpectedPositionError extends Error {
 }
 
 class PreflopPage extends StatelessWidget {
+  final phase;
+
+  PreflopPage({required this.phase});
+
   @override
   Widget build(BuildContext context) {
     return Consumer<MyAppState>(builder: (context, state, child) {

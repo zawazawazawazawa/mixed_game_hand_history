@@ -56,7 +56,9 @@ class _MyHomePageState extends State<MyHomePage> {
             page = ParticipantsPage();
             break;
           case 'preflop':
-            page = PreflopPage();
+            page = PreflopPage(
+              phase: 'preflop',
+            );
             break;
           case 'hero':
             page = HeroPage();
