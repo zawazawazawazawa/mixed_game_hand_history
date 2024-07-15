@@ -66,7 +66,10 @@ class _MyHomePageState extends State<MyHomePage> {
             page = HeroPage();
             break;
           case 'flop':
-            page = FlopPage();
+            List<String> positions = state.getFlopActiveUserPositions();
+            page = BettingRoundPage(
+              positions: positions,
+            );
             break;
           default:
             throw UnimplementedError('no widget for $selectedIndex');

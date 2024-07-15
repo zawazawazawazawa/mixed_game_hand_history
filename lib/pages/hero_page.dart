@@ -25,6 +25,13 @@ class _HeroPageState extends State<HeroPage> {
 
       return Column(
         children: [
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              state.updateSelectedIndex('flop');
+            },
+            child: Text('Flopを入力'),
+          ),
           Column(
             children: List<Widget>.generate(positions.length, (int index) {
               return Column(

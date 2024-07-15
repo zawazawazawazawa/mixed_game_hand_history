@@ -61,6 +61,49 @@ class MyAppState extends ChangeNotifier {
     return positions;
   }
 
+  List<String> getFlopActiveUserPositions() {
+    PreFlopAction? lastRaiseAction;
+    List<String> positions = [];
+
+    // 一番最後に行われたraiseのPreFlopActionを見つける
+    for (var action in preflop) {
+      if (action.action == 'raise' &&
+          (lastRaiseAction == null || action.round > lastRaiseAction.round)) {
+        lastRaiseAction = action;
+      }
+    }
+
+    if (lastRaiseAction != null) {
+      // 最後のraiseアクションの後にcallがあるかどうかを確認
+      bool hasCallAfterRaise = false;
+      for (var action in preflop) {
+        if (action.round > lastRaiseAction.round && action.action == 'call') {
+          hasCallAfterRaise = true;
+          positions.add(lastRaiseAction.position);
+          positions.add(action.position);
+        }
+      }
+
+      if (!hasCallAfterRaise) {
+        // 最後のraiseの後にcallがない場合、callしたプレイヤーのpositionを返す
+        for (var action in preflop) {
+          if (action.action == 'call') {
+            positions.add(action.position);
+          }
+        }
+      }
+    } else {
+      // 誰もraiseしていない場合、callしたプレイヤーのpositionを返す
+      for (var action in preflop) {
+        if (action.action == 'call') {
+          positions.add(action.position);
+        }
+      }
+    }
+
+    return positions;
+  }
+
   void updatePreflop(
       {required int round,
       required String position,

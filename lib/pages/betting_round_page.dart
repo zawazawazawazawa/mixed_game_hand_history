@@ -20,6 +20,7 @@ class BettingRoundPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<MyAppState>(builder: (context, state, child) {
+      print("positions: $positions");
       return Column(mainAxisAlignment: MainAxisAlignment.start, children: [
         Expanded(
             child: RadioAction(
