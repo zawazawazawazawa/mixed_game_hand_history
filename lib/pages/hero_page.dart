@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../my_app_state.dart';
-import '../utils/get_active_user_positions.dart';
 import '../utils/show_card_input_dialog.dart';
 
 class HeroPage extends StatefulWidget {
@@ -22,8 +21,7 @@ class _HeroPageState extends State<HeroPage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<MyAppState>(builder: (context, state, children) {
-      List<String> positions =
-          getActiveUserPositions(participants: state.participants);
+      List<String> positions = state.getPreflopActiveUserPositions();
 
       return Column(
         children: [

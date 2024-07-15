@@ -1,6 +1,6 @@
 library get_active_user_positions;
 
-List<String> getActiveUserPositions({required int participants}) {
+List<String> getPreflopActiveUserPositions({required int participants}) {
   List<String> positions = ['BB', 'SB', 'BTN', 'CO', 'HJ', 'LJ', 'UTG'];
 
   if (participants == 8) {
@@ -13,4 +13,3 @@ List<String> getActiveUserPositions({required int participants}) {
 
   return positions;
 }
-

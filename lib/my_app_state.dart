@@ -47,6 +47,20 @@ class MyAppState extends ChangeNotifier {
     }
   }
 
+  List<String> getPreflopActiveUserPositions() {
+    List<String> positions = ['BB', 'SB', 'BTN', 'CO', 'HJ', 'LJ', 'UTG'];
+
+    if (_participants == 8) {
+      positions.insert(6, 'UTG+1');
+    } else if (_participants == 9) {
+      positions.insertAll(6, ['UTG+2', 'UTG+1']);
+    } else {
+      positions = positions.sublist(0, _participants);
+    }
+
+    return positions;
+  }
+
   void updatePreflop(
       {required int round,
       required String position,

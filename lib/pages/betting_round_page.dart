@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 
 import '../my_app_state.dart';
-import '../utils/get_active_user_positions.dart';
 
 class UnexpectedPositionError extends Error {
   final String message;
@@ -13,17 +12,14 @@ class UnexpectedPositionError extends Error {
   String toString() => message;
 }
 
-class PreflopPage extends StatelessWidget {
-  final phase;
+class BettingRoundPage extends StatelessWidget {
+  final positions;
 
-  PreflopPage({required this.phase});
+  BettingRoundPage({required this.positions});
 
   @override
   Widget build(BuildContext context) {
     return Consumer<MyAppState>(builder: (context, state, child) {
-      List<String> positions =
-          getActiveUserPositions(participants: state.participants);
-
       return Column(mainAxisAlignment: MainAxisAlignment.start, children: [
         Expanded(
             child: RadioAction(

@@ -5,7 +5,7 @@ import 'pages/blind_page.dart';
 import 'pages/flop_page.dart';
 import 'pages/hero_page.dart';
 import 'pages/participants_page.dart';
-import 'pages/preflop_page.dart';
+import 'pages/betting_round_page.dart';
 import 'pages/start_page.dart';
 
 import 'my_app_state.dart';
@@ -56,8 +56,10 @@ class _MyHomePageState extends State<MyHomePage> {
             page = ParticipantsPage();
             break;
           case 'preflop':
-            page = PreflopPage(
-              phase: 'preflop',
+            List<String> positions = state.getPreflopActiveUserPositions();
+
+            page = BettingRoundPage(
+              positions: positions,
             );
             break;
           case 'hero':
