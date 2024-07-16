@@ -65,39 +65,38 @@ class MyAppState extends ChangeNotifier {
     PreFlopAction? lastRaiseAction;
     List<String> positions = [];
 
-    // 一番最後に行われたraiseのPreFlopActionを見つける
-    for (var action in preflop) {
-      if (action.action == 'raise' &&
-          (lastRaiseAction == null || action.round > lastRaiseAction.round)) {
+    // preflopのアクションを逆順にloopし最初のraiseを探す
+    for (var action in preflop.reversed.toList()) {
+      if (action.action == 'raise') {
         lastRaiseAction = action;
+        break;
       }
     }
 
     if (lastRaiseAction != null) {
+      print('last raise actionはある');
+      positions.add(lastRaiseAction.position);
+
       // 最後のraiseアクションの後にcallがあるかどうかを確認
-      bool hasCallAfterRaise = false;
-      for (var action in preflop) {
-        if (action.round > lastRaiseAction.round && action.action == 'call') {
-          hasCallAfterRaise = true;
-          positions.add(lastRaiseAction.position);
+      for (var action in preflop.reversed.toList()) {
+        if (preflop.indexWhere(
+                    (preflopAction) => preflopAction == lastRaiseAction) <
+                preflop
+                    .indexWhere((preflopAction) => preflopAction == action) &&
+            action.action == 'call') {
           positions.add(action.position);
         }
       }
 
-      if (!hasCallAfterRaise) {
-        // 最後のraiseの後にcallがない場合、callしたプレイヤーのpositionを返す
-        for (var action in preflop) {
-          if (action.action == 'call') {
-            positions.add(action.position);
-          }
-        }
+      if (positions.length == 1) {
+        // To be implemented
+        // 誰もcallしていないので終わり
       }
     } else {
       // 誰もraiseしていない場合、callしたプレイヤーのpositionを返す
       for (var action in preflop) {
-        if (action.action == 'call') {
-          positions.add(action.position);
-        }
+        // To be implemented
+        // check around
       }
     }
 
