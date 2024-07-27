@@ -13,55 +13,62 @@ class UnexpectedPositionError extends Error {
 }
 
 class BettingRoundPage extends StatelessWidget {
+  final bettingRound;
   final positions;
 
-  BettingRoundPage({required this.positions});
+  BettingRoundPage({required this.bettingRound, required this.positions});
 
   @override
   Widget build(BuildContext context) {
     return Consumer<MyAppState>(builder: (context, state, child) {
-      print("positions: $positions");
       return Column(mainAxisAlignment: MainAxisAlignment.start, children: [
         Expanded(
             child: RadioAction(
-                positions: positions, bigBlindAmount: state.bigBlind))
+                bettingRound: bettingRound,
+                positions: positions,
+                bigBlindAmount: state.bigBlind))
       ]);
     });
   }
 }
 
 class RadioAction extends StatefulWidget {
+  final String bettingRound;
   final List<String> positions;
   final int bigBlindAmount;
 
-  RadioAction({required this.positions, required this.bigBlindAmount});
+  RadioAction(
+      {required this.bettingRound,
+      required this.positions,
+      required this.bigBlindAmount});
 
   @override
   _RadioActionState createState() => _RadioActionState();
 }
 
 class _RadioActionState extends State<RadioAction> {
+  late String _bettingRound;
   late List<String> _positions;
 
-  String? _utgSelectedAction = null;
-  String? _utg1SelectedAction = null;
-  String? _utg2SelectedAction = null;
-  String? _ljSelectedAction = null;
-  String? _hjSelectedAction = null;
-  String? _coSelectedAction = null;
-  String? _btnSelectedAction = null;
-  String? _sbSelectedAction = null;
-  String? _bbSelectedAction = null;
+  String? _utgSelectedAction;
+  String? _utg1SelectedAction;
+  String? _utg2SelectedAction;
+  String? _ljSelectedAction;
+  String? _hjSelectedAction;
+  String? _coSelectedAction;
+  String? _btnSelectedAction;
+  String? _sbSelectedAction;
+  String? _bbSelectedAction;
 
-  int? _utgRaisedAmount = null;
-  int? _utg1RaisedAmount = null;
-  int? _utg2RaisedAmount = null;
-  int? _ljRaisedAmount = null;
-  int? _hjRaisedAmount = null;
-  int? _coRaisedAmount = null;
-  int? _btnRaisedAmount = null;
-  int? _sbRaisedAmount = null;
-  int? _bbRaisedAmount = null;
+  int? _utgRaisedAmount;
+  int? _utg1RaisedAmount;
+  int? _utg2RaisedAmount;
+  int? _ljRaisedAmount;
+  int? _hjRaisedAmount;
+  int? _coRaisedAmount;
+  int? _btnRaisedAmount;
+  int? _sbRaisedAmount;
+  int? _bbRaisedAmount;
 
   int _currentTargetPosition = 0;
   int _round = 1;
@@ -70,6 +77,7 @@ class _RadioActionState extends State<RadioAction> {
   @override
   void initState() {
     super.initState();
+    _bettingRound = widget.bettingRound;
     _positions = widget.positions;
     _callAmount = widget.bigBlindAmount;
     _currentTargetPosition = _positions.length - 1;
@@ -103,6 +111,40 @@ class _RadioActionState extends State<RadioAction> {
         _round = 1;
         _callAmount = state.bigBlind;
       }
+
+      List<PreFlopAction> getBetActionState() {
+        switch (_bettingRound) {
+          case 'preflop':
+            return state.preflop;
+          case 'flop':
+            return state.flop;
+          case 'turn':
+            return state.turn;
+          case 'river':
+            return state.river;
+          default:
+            throw Error();
+        }
+      }
+
+      List<PreFlopAction> betActionState = getBetActionState();
+
+      getActionUpdateMethod() {
+        switch (_bettingRound) {
+          case 'preflop':
+            return state.updatePreflop;
+          case 'flop':
+            return state.updateFlop;
+          case 'turn':
+            return state.updateTurn;
+          case 'river':
+            return state.updateRiver;
+          default:
+            throw Error();
+        }
+      }
+
+      var actionUpdateMethod = getActionUpdateMethod();
 
       String? getActionStateFromIndex({required int index}) {
         switch (_positions[index]) {
@@ -246,14 +288,14 @@ class _RadioActionState extends State<RadioAction> {
               _bbSelectedAction = value;
               if (value == 'call') {
                 _bbRaisedAmount = _callAmount;
-                state.updatePreflop(
+                actionUpdateMethod(
                     round: _round,
                     position: position,
                     action: _bbSelectedAction,
                     amount: _bbRaisedAmount);
               } else if (value == 'fold') {
                 _bbRaisedAmount = 0;
-                state.updatePreflop(
+                actionUpdateMethod(
                     round: _round,
                     position: position,
                     action: _bbSelectedAction,
@@ -264,14 +306,14 @@ class _RadioActionState extends State<RadioAction> {
               _sbSelectedAction = value;
               if (value == 'call') {
                 _sbRaisedAmount = _callAmount;
-                state.updatePreflop(
+                actionUpdateMethod(
                     round: _round,
                     position: position,
                     action: _sbSelectedAction,
                     amount: _sbRaisedAmount);
               } else if (value == 'fold') {
                 _sbRaisedAmount = 0;
-                state.updatePreflop(
+                actionUpdateMethod(
                     round: _round,
                     position: position,
                     action: _sbSelectedAction,
@@ -282,14 +324,14 @@ class _RadioActionState extends State<RadioAction> {
               _btnSelectedAction = value;
               if (value == 'call') {
                 _btnRaisedAmount = _callAmount;
-                state.updatePreflop(
+                actionUpdateMethod(
                     round: _round,
                     position: position,
                     action: _btnSelectedAction,
                     amount: _btnRaisedAmount);
               } else if (value == 'fold') {
                 _btnRaisedAmount = 0;
-                state.updatePreflop(
+                actionUpdateMethod(
                     round: _round,
                     position: position,
                     action: _btnSelectedAction,
@@ -300,14 +342,14 @@ class _RadioActionState extends State<RadioAction> {
               _coSelectedAction = value;
               if (value == 'call') {
                 _coRaisedAmount = _callAmount;
-                state.updatePreflop(
+                actionUpdateMethod(
                     round: _round,
                     position: position,
                     action: _coSelectedAction,
                     amount: _coRaisedAmount);
               } else if (value == 'fold') {
                 _coRaisedAmount = 0;
-                state.updatePreflop(
+                actionUpdateMethod(
                     round: _round,
                     position: position,
                     action: _coSelectedAction,
@@ -318,14 +360,14 @@ class _RadioActionState extends State<RadioAction> {
               _hjSelectedAction = value;
               if (value == 'call') {
                 _hjRaisedAmount = _callAmount;
-                state.updatePreflop(
+                actionUpdateMethod(
                     round: _round,
                     position: position,
                     action: _hjSelectedAction,
                     amount: _hjRaisedAmount);
               } else if (value == 'fold') {
                 _hjRaisedAmount = 0;
-                state.updatePreflop(
+                actionUpdateMethod(
                     round: _round,
                     position: position,
                     action: _hjSelectedAction,
@@ -336,14 +378,14 @@ class _RadioActionState extends State<RadioAction> {
               _ljSelectedAction = value;
               if (value == 'call') {
                 _ljRaisedAmount = _callAmount;
-                state.updatePreflop(
+                actionUpdateMethod(
                     round: _round,
                     position: position,
                     action: _ljSelectedAction,
                     amount: _ljRaisedAmount);
               } else if (value == 'fold') {
                 _ljRaisedAmount = 0;
-                state.updatePreflop(
+                actionUpdateMethod(
                     round: _round,
                     position: position,
                     action: _ljSelectedAction,
@@ -354,14 +396,14 @@ class _RadioActionState extends State<RadioAction> {
               _utg2SelectedAction = value;
               if (value == 'call') {
                 _utg2RaisedAmount = _callAmount;
-                state.updatePreflop(
+                actionUpdateMethod(
                     round: _round,
                     position: position,
                     action: _utg2SelectedAction,
                     amount: _utg2RaisedAmount);
               } else if (value == 'fold') {
                 _utg2RaisedAmount = 0;
-                state.updatePreflop(
+                actionUpdateMethod(
                     round: _round,
                     position: position,
                     action: _utg2SelectedAction,
@@ -372,14 +414,14 @@ class _RadioActionState extends State<RadioAction> {
               _utg1SelectedAction = value;
               if (value == 'call') {
                 _utg1RaisedAmount = _callAmount;
-                state.updatePreflop(
+                actionUpdateMethod(
                     round: _round,
                     position: position,
                     action: _utg1SelectedAction,
                     amount: _utg1RaisedAmount);
               } else if (value == 'fold') {
                 _utg1RaisedAmount = 0;
-                state.updatePreflop(
+                actionUpdateMethod(
                     round: _round,
                     position: position,
                     action: _utg1SelectedAction,
@@ -390,14 +432,14 @@ class _RadioActionState extends State<RadioAction> {
               _utgSelectedAction = value;
               if (value == 'call') {
                 _utgRaisedAmount = _callAmount;
-                state.updatePreflop(
+                actionUpdateMethod(
                     round: _round,
                     position: position,
                     action: _utgSelectedAction,
                     amount: _utgRaisedAmount);
               } else if (value == 'fold') {
                 _utgRaisedAmount = 0;
-                state.updatePreflop(
+                actionUpdateMethod(
                     round: _round,
                     position: position,
                     action: _utgSelectedAction,
@@ -433,7 +475,7 @@ class _RadioActionState extends State<RadioAction> {
           switch (position) {
             case 'BB':
               _bbRaisedAmount = amount;
-              state.updatePreflop(
+              actionUpdateMethod(
                   round: _round,
                   position: position,
                   action: _bbSelectedAction,
@@ -442,7 +484,7 @@ class _RadioActionState extends State<RadioAction> {
               break;
             case 'SB':
               _sbRaisedAmount = amount;
-              state.updatePreflop(
+              actionUpdateMethod(
                   round: _round,
                   position: position,
                   action: _sbSelectedAction,
@@ -451,7 +493,7 @@ class _RadioActionState extends State<RadioAction> {
               break;
             case 'BTN':
               _btnRaisedAmount = amount;
-              state.updatePreflop(
+              actionUpdateMethod(
                   round: _round,
                   position: position,
                   action: _btnSelectedAction,
@@ -460,7 +502,7 @@ class _RadioActionState extends State<RadioAction> {
               break;
             case 'CO':
               _coRaisedAmount = amount;
-              state.updatePreflop(
+              actionUpdateMethod(
                   round: _round,
                   position: position,
                   action: _coSelectedAction,
@@ -469,7 +511,7 @@ class _RadioActionState extends State<RadioAction> {
               break;
             case 'HJ':
               _hjRaisedAmount = amount;
-              state.updatePreflop(
+              actionUpdateMethod(
                   round: _round,
                   position: position,
                   action: _hjSelectedAction,
@@ -478,7 +520,7 @@ class _RadioActionState extends State<RadioAction> {
               break;
             case 'LJ':
               _ljRaisedAmount = amount;
-              state.updatePreflop(
+              actionUpdateMethod(
                   round: _round,
                   position: position,
                   action: _ljSelectedAction,
@@ -487,7 +529,7 @@ class _RadioActionState extends State<RadioAction> {
               break;
             case 'UTG+2':
               _utg2RaisedAmount = amount;
-              state.updatePreflop(
+              actionUpdateMethod(
                   round: _round,
                   position: position,
                   action: _utg2SelectedAction,
@@ -496,7 +538,7 @@ class _RadioActionState extends State<RadioAction> {
               break;
             case 'UTG+1':
               _utg1RaisedAmount = amount;
-              state.updatePreflop(
+              actionUpdateMethod(
                   round: _round,
                   position: position,
                   action: _utg1SelectedAction,
@@ -505,7 +547,7 @@ class _RadioActionState extends State<RadioAction> {
               break;
             case 'UTG':
               _utgRaisedAmount = amount;
-              state.updatePreflop(
+              actionUpdateMethod(
                   round: _round,
                   position: position,
                   action: _utgSelectedAction,
@@ -535,12 +577,14 @@ class _RadioActionState extends State<RadioAction> {
         });
       }
 
+      print("length: ${betActionState.length}");
+
       List<Widget> _widgets =
-          List<Widget>.generate(state.preflop.length, (int index) {
+          List<Widget>.generate(betActionState.length, (int index) {
         return Column(
           children: [
             SizedBox(height: 20),
-            Text(state.preflop[index].position),
+            Text(betActionState[index].position),
             Row(
               children: [
                 Expanded(
@@ -548,7 +592,7 @@ class _RadioActionState extends State<RadioAction> {
                     title: Text('Raise'),
                     leading: Radio<String>(
                       value: 'raise',
-                      groupValue: state.preflop[index].action,
+                      groupValue: betActionState[index].action,
                       onChanged: (value) {},
                     ),
                   ),
@@ -558,7 +602,7 @@ class _RadioActionState extends State<RadioAction> {
                     title: Text('Call'),
                     leading: Radio<String>(
                       value: 'call',
-                      groupValue: state.preflop[index].action,
+                      groupValue: betActionState[index].action,
                       onChanged: (value) {},
                     ),
                   ),
@@ -568,15 +612,15 @@ class _RadioActionState extends State<RadioAction> {
                     title: Text('Fold'),
                     leading: Radio<String>(
                       value: 'fold',
-                      groupValue: state.preflop[index].action,
+                      groupValue: betActionState[index].action,
                       onChanged: (value) {},
                     ),
                   ),
                 )
               ],
             ),
-            state.preflop[index].action == 'raise'
-                ? Text("amount: ${state.preflop[index].amount}")
+            betActionState[index].action == 'raise'
+                ? Text("amount: ${betActionState[index].amount}")
                 : Container()
           ],
         );
@@ -644,6 +688,9 @@ class _RadioActionState extends State<RadioAction> {
           Text('Big Blind: ${state.bigBlind}'),
           Text('Ante: ${state.ante}'),
           Text('${state.participants} handed'),
+          Text(
+              'Preflop Active Player: ${state.getPreflopActiveUserPositions()}'),
+          Text('Flop Active Player: ${state.getFlopActiveUserPositions()}'),
           Column(children: _widgets),
           ElevatedButton(
             onPressed: () {

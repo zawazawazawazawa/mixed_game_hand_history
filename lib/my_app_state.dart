@@ -7,6 +7,10 @@ class MyAppState extends ChangeNotifier {
   int _ante = 100;
   int _participants = 2;
   List<PreFlopAction> _preflop = [];
+  List<PreFlopAction> _flop = [];
+  List<PreFlopAction> _turn = [];
+  List<PreFlopAction> _river = [];
+
   String _heroPosition = '';
 
   String get selectedIndex => _selectedIndex;
@@ -15,6 +19,10 @@ class MyAppState extends ChangeNotifier {
   int get ante => _ante;
   int get participants => _participants;
   List<PreFlopAction> get preflop => _preflop;
+  List<PreFlopAction> get flop => _flop;
+  List<PreFlopAction> get turn => _turn;
+  List<PreFlopAction> get river => _river;
+
   String get heroPosition => _heroPosition;
 
   void updateSelectedIndex(String inputValue) {
@@ -62,6 +70,18 @@ class MyAppState extends ChangeNotifier {
   }
 
   List<String> getFlopActiveUserPositions() {
+    List<String> defaultPositions = [
+      'BTN',
+      'CO',
+      'HJ',
+      'LJ',
+      'UTG+2',
+      'UTG+1',
+      'UTG',
+      'SB',
+      'BB',
+    ];
+
     PreFlopAction? lastRaiseAction;
     List<String> positions = [];
 
@@ -100,6 +120,9 @@ class MyAppState extends ChangeNotifier {
       }
     }
 
+    positions.sort((x, y) =>
+        defaultPositions.indexOf(x).compareTo(defaultPositions.indexOf(y)));
+
     return positions;
   }
 
@@ -121,6 +144,24 @@ class MyAppState extends ChangeNotifier {
     _preflop = [];
     notifyListeners();
   }
+
+  void updateFlop(
+      {required int round,
+      required String position,
+      required String? action,
+      required int? amount}) {
+    _flop.add(PreFlopAction(
+      round: round,
+      position: position,
+      action: action,
+      amount: amount,
+    ));
+    notifyListeners();
+  }
+
+  void updateTurn() {}
+
+  void updateRiver() {}
 
   void updateHeroPosition({required String position}) {
     _heroPosition = position;

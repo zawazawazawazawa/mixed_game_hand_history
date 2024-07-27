@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'pages/blind_page.dart';
-import 'pages/flop_page.dart';
 import 'pages/hero_page.dart';
 import 'pages/participants_page.dart';
 import 'pages/betting_round_page.dart';
@@ -59,6 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
             List<String> positions = state.getPreflopActiveUserPositions();
 
             page = BettingRoundPage(
+              bettingRound: 'preflop',
               positions: positions,
             );
             break;
@@ -68,6 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
           case 'flop':
             List<String> positions = state.getFlopActiveUserPositions();
             page = BettingRoundPage(
+              bettingRound: 'flop',
               positions: positions,
             );
             break;
