@@ -6,10 +6,10 @@ class MyAppState extends ChangeNotifier {
   int _smallBlind = 100;
   int _ante = 100;
   int _participants = 2;
-  List<PreFlopAction> _preflop = [];
-  List<PreFlopAction> _flop = [];
-  List<PreFlopAction> _turn = [];
-  List<PreFlopAction> _river = [];
+  List<PlayerAction> _preflop = [];
+  List<PlayerAction> _flop = [];
+  List<PlayerAction> _turn = [];
+  List<PlayerAction> _river = [];
 
   String _heroPosition = '';
 
@@ -18,10 +18,10 @@ class MyAppState extends ChangeNotifier {
   int get smallBlind => _smallBlind;
   int get ante => _ante;
   int get participants => _participants;
-  List<PreFlopAction> get preflop => _preflop;
-  List<PreFlopAction> get flop => _flop;
-  List<PreFlopAction> get turn => _turn;
-  List<PreFlopAction> get river => _river;
+  List<PlayerAction> get preflop => _preflop;
+  List<PlayerAction> get flop => _flop;
+  List<PlayerAction> get turn => _turn;
+  List<PlayerAction> get river => _river;
 
   String get heroPosition => _heroPosition;
 
@@ -82,27 +82,26 @@ class MyAppState extends ChangeNotifier {
       'BB',
     ];
 
-    PreFlopAction? lastRaiseAction;
+    PlayerAction? lastRaisePlayerAction;
     List<String> positions = [];
 
     // preflopのアクションを逆順にloopし最初のraiseを探す
     for (var action in preflop.reversed.toList()) {
       if (action.action == 'raise') {
-        lastRaiseAction = action;
+        lastRaisePlayerAction = action;
         break;
       }
     }
 
-    if (lastRaiseAction != null) {
-      print('last raise actionはある');
-      positions.add(lastRaiseAction.position);
+    if (lastRaisePlayerAction != null) {
+      positions.add(lastRaisePlayerAction.position);
 
       // 最後のraiseアクションの後にcallがあるかどうかを確認
       for (var action in preflop.reversed.toList()) {
-        if (preflop.indexWhere(
-                    (preflopAction) => preflopAction == lastRaiseAction) <
-                preflop
-                    .indexWhere((preflopAction) => preflopAction == action) &&
+        if (preflop.indexWhere((preflopPlayerAction) =>
+                    preflopPlayerAction == lastRaisePlayerAction) <
+                preflop.indexWhere(
+                    (preflopPlayerAction) => preflopPlayerAction == action) &&
             action.action == 'call') {
           positions.add(action.position);
         }
@@ -131,7 +130,7 @@ class MyAppState extends ChangeNotifier {
       required String position,
       required String? action,
       required int? amount}) {
-    _preflop.add(PreFlopAction(
+    _preflop.add(PlayerAction(
       round: round,
       position: position,
       action: action,
@@ -145,12 +144,27 @@ class MyAppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void resetFlop() {
+    _flop = [];
+    notifyListeners();
+  }
+
+  void resetTurn() {
+    _turn = [];
+    notifyListeners();
+  }
+
+  void resetRiver() {
+    _river = [];
+    notifyListeners();
+  }
+
   void updateFlop(
       {required int round,
       required String position,
       required String? action,
       required int? amount}) {
-    _flop.add(PreFlopAction(
+    _flop.add(PlayerAction(
       round: round,
       position: position,
       action: action,
@@ -184,13 +198,13 @@ class MyAppState extends ChangeNotifier {
   }
 }
 
-class PreFlopAction {
+class PlayerAction {
   int round;
   String position;
   String? action;
   int? amount;
 
-  PreFlopAction(
+  PlayerAction(
       {required this.round,
       required this.position,
       required this.action,

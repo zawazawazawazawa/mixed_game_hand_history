@@ -112,7 +112,7 @@ class _RadioActionState extends State<RadioAction> {
         _callAmount = state.bigBlind;
       }
 
-      List<PreFlopAction> getBetActionState() {
+      List<PlayerAction> getBetActionState() {
         switch (_bettingRound) {
           case 'preflop':
             return state.preflop;
@@ -127,7 +127,7 @@ class _RadioActionState extends State<RadioAction> {
         }
       }
 
-      List<PreFlopAction> betActionState = getBetActionState();
+      List<PlayerAction> betActionState = getBetActionState();
 
       getActionUpdateMethod() {
         switch (_bettingRound) {
@@ -145,6 +145,23 @@ class _RadioActionState extends State<RadioAction> {
       }
 
       var actionUpdateMethod = getActionUpdateMethod();
+
+      getActionResetMethod() {
+        switch (_bettingRound) {
+          case 'preflop':
+            return state.resetPreflop;
+          case 'flop':
+            return state.resetFlop;
+          case 'turn':
+            return state.resetTurn;
+          case 'river':
+            return state.resetRiver;
+          default:
+            throw Error();
+        }
+      }
+
+      var actionResetMethod = getActionResetMethod();
 
       String? getActionStateFromIndex({required int index}) {
         switch (_positions[index]) {
@@ -576,8 +593,6 @@ class _RadioActionState extends State<RadioAction> {
           }
         });
       }
-
-      print("length: ${betActionState.length}");
 
       List<Widget> _widgets =
           List<Widget>.generate(betActionState.length, (int index) {
