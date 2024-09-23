@@ -6,6 +6,7 @@ import 'pages/hero_page.dart';
 import 'pages/participants_page.dart';
 import 'pages/betting_round_page.dart';
 import 'pages/start_page.dart';
+import 'pages/community_cards_selection_page.dart';
 
 import 'my_app_state.dart';
 
@@ -66,6 +67,11 @@ class _MyHomePageState extends State<MyHomePage> {
             page = HeroPage();
             break;
           case 'flop':
+            page = CommunityCardSelectionPage(
+              round: 'flop'
+              );
+            break;
+          case 'flopBettingRound':
             List<String> positions = state.getFlopActiveUserPositions();
             page = BettingRoundPage(
               bettingRound: 'flop',

@@ -1,9 +1,73 @@
-library show_card_input_dialog;
-
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../my_app_state.dart';
+
+class CardsInputWidget extends StatefulWidget {
+  final int numOfCards;
+
+  CardsInputWidget({required this.numOfCards});
+
+  @override
+  _CardsInputWidgetState createState() => _CardsInputWidgetState();
+}
+
+class _CardsInputWidgetState extends State<CardsInputWidget> {
+  late List<PlayingCard> cards;
+
+  @override
+  void initState() {
+    super.initState();
+    cards = List.filled(widget.numOfCards, PlayingCard(suit: null, rank: null));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<MyAppState>(builder: (context, state, children) {
+      void inputCard({required PlayingCard card, required int index}) {
+        List<PlayingCard> cards =
+            List.filled(widget.numOfCards, PlayingCard(suit: null, rank: null));
+        setState(() {
+          cards[index] = card;
+        });
+      }
+
+      return Column(
+        children: [
+          SizedBox(height: 21),
+          Text("Input Cards"),
+          Column(
+            children: List.generate(widget.numOfCards, (index) {
+              return (cards[index].suit == null && cards[index].rank == null)
+                  ? InkWell(
+                      child: Card(
+                        child: Column(
+                          children: [
+                            Text("Card$index"),
+                          ],
+                        ),
+                      ),
+                      onTap: () {
+                        showCardInputDialog(
+                            context: context,
+                            onSubmit: ({required PlayingCard card}) {
+                              inputCard(card: card, index: index);
+                            });
+                      },
+                    )
+                  : Column(children: [
+                      Text("suit: ${cards[index].suit}"),
+                      SizedBox(width: 21),
+                      Text("card: ${cards[index].rank}"),
+                    ]);
+            }),
+          ),
+        ],
+      );
+    });
+  }
+}
 
 void showCardInputDialog(
     {required BuildContext context,

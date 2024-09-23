@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../my_app_state.dart';
-import '../utils/show_card_input_dialog.dart';
+import '../widgets/cards_input_widget.dart';
 
 class HeroPage extends StatefulWidget {
   @override
@@ -10,7 +10,8 @@ class HeroPage extends StatefulWidget {
 }
 
 class _HeroPageState extends State<HeroPage> {
-  List<PlayingCard> cards = List.filled(4, PlayingCard(suit: null, rank: null));
+  // TODO: NLH固定
+  List<PlayingCard> cards = List.filled(2, PlayingCard(suit: null, rank: null));
 
   void inputCard({required PlayingCard card, required int index}) {
     setState(() {
@@ -53,39 +54,42 @@ class _HeroPageState extends State<HeroPage> {
             }).reversed.toList(),
           ),
           if (state.heroPosition != '')
-            Column(
-              children: [
-                SizedBox(height: 20),
-                Text("Hand"),
-                Column(
-                  children: List.generate(4, (index) {
-                    return (cards[index].suit == null &&
-                            cards[index].rank == null)
-                        ? InkWell(
-                            child: Card(
-                              child: Column(
-                                children: [
-                                  Text("Card$index"),
-                                ],
-                              ),
-                            ),
-                            onTap: () {
-                              showCardInputDialog(
-                                  context: context,
-                                  onSubmit: ({required PlayingCard card}) {
-                                    inputCard(card: card, index: index);
-                                  });
-                            },
-                          )
-                        : Column(children: [
-                            Text("suit: ${cards[index].suit}"),
-                            SizedBox(width: 20),
-                            Text("card: ${cards[index].rank}"),
-                          ]);
-                  }),
-                ),
-              ],
+            CardsInputWidget(
+              numOfCards: 2,
             ),
+          //Column(
+          //  children: [
+          //    SizedBox(height: 20),
+          //    Text("Hand"),
+          //    Column(
+          //      children: List.generate(4, (index) {
+          //        return (cards[index].suit == null &&
+          //                cards[index].rank == null)
+          //            ? InkWell(
+          //                child: Card(
+          //                  child: Column(
+          //                    children: [
+          //                      Text("Card$index"),
+          //                    ],
+          //                  ),
+          //                ),
+          //                onTap: () {
+          //                  showCardInputDialog(
+          //                      context: context,
+          //                      onSubmit: ({required PlayingCard card}) {
+          //                        inputCard(card: card, index: index);
+          //                      });
+          //                },
+          //              )
+          //            : Column(children: [
+          //                Text("suit: ${cards[index].suit}"),
+          //                SizedBox(width: 20),
+          //                Text("card: ${cards[index].rank}"),
+          //              ]);
+          //      }),
+          //    ),
+          //  ],
+          //),
         ],
       );
     });

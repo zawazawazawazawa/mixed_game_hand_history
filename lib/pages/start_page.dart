@@ -18,10 +18,10 @@ class StartPage extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {
                     // BigBlindページへ遷移
-                    // state.updateSelectedIndex('blind');
+                    state.updateSelectedIndex('blind');
 
                     // TODO: debug用 preflop pageへ遷移
-                    state.updateSelectedIndex('preflop');
+                    // state.updateSelectedIndex('hero');
                   },
                   child: Text('Start'),
                 ),

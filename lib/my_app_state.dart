@@ -5,10 +5,16 @@ class MyAppState extends ChangeNotifier {
   int _bigBlind = 100;
   int _smallBlind = 100;
   int _ante = 100;
-  // int _participants = 2;
+  int _participants = 2;
   // TODO: debug用 3人プレイ
-  int _participants = 3;  
+  // int _participants = 3;
   List<PlayerAction> _preflop = [];
+  // TODO: debug用 preflopのアクションを追加
+  //List<PlayerAction> _preflop = [
+  //  PlayerAction(round: 1, position: 'BTN', action: 'raise', amount: 300),
+  //  PlayerAction(round: 1, position: 'SB', action: 'fold', amount: 0),
+  //  PlayerAction(round: 1, position: 'BB', action: 'call', amount: 300),
+  //];
   List<PlayerAction> _flop = [];
   List<PlayerAction> _turn = [];
   List<PlayerAction> _river = [];
