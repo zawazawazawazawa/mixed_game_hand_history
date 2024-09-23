@@ -26,8 +26,6 @@ class _CardsInputWidgetState extends State<CardsInputWidget> {
   Widget build(BuildContext context) {
     return Consumer<MyAppState>(builder: (context, state, children) {
       void inputCard({required PlayingCard card, required int index}) {
-        List<PlayingCard> cards =
-            List.filled(widget.numOfCards, PlayingCard(suit: null, rank: null));
         setState(() {
           cards[index] = card;
         });
