@@ -13,8 +13,8 @@ class UnexpectedPositionError extends Error {
 }
 
 class BettingRoundPage extends StatelessWidget {
-  final bettingRound;
-  final positions;
+  final String bettingRound;
+  final List<String> positions;
 
   BettingRoundPage({required this.bettingRound, required this.positions});
 
@@ -241,35 +241,51 @@ class _RadioActionState extends State<RadioAction> {
         }
       }
 
+      getRaisedAmountListByPosition({required List<String> positions}) {
+        var map = {};
+        map = {
+          for (var position in positions)
+            position: getRaisedAmountFromPosition(position: position)
+        };
+
+        print("map: $map");
+        return map;
+      }
+
       bool isRemainingAction() {
-        // RaiseAmountに一つでもnullがあればまだactionしてない人がいる
-        List<int?> amounts = [
-          _bbRaisedAmount,
-          _sbRaisedAmount,
-          _btnRaisedAmount,
-          _coRaisedAmount,
-          _hjRaisedAmount,
-          _ljRaisedAmount,
-          _utg2RaisedAmount,
-          _utg1RaisedAmount,
-          _utgRaisedAmount
-        ];
+        //// RaiseAmountに一つでもnullがあればまだactionしてない人がいる
+        //List<int?> amounts = [
+        //  _bbRaisedAmount,
+        //  _sbRaisedAmount,
+        //  _btnRaisedAmount,
+        //  _coRaisedAmount,
+        //  _hjRaisedAmount,
+        //  _ljRaisedAmount,
+        //  _utg2RaisedAmount,
+        //  _utg1RaisedAmount,
+        //  _utgRaisedAmount
+        //];
 
-        List<int?> actualPlayersAmounts = amounts.sublist(0, _positions.length);
+        //// TODO: これをpositionを引数にとる関数化したい
+        //List<int?> actualPlayersAmounts = amounts.sublist(0, _positions.length);
 
-        var isIncludedNullAction =
-            actualPlayersAmounts.any((element) => element == null);
+        var raisedAmountList =
+            getRaisedAmountListByPosition(positions: _positions);
+
+        print("list: $raisedAmountList");
+
+        var isIncludedNullAction = raisedAmountList.containsValue(null);
 
         if (isIncludedNullAction) {
           return true;
         }
 
         // RaiseAmountにnullがなく、0ではない人のamountがすべて等しければこのroundは終了している
-        List<int?> rasedOrCalledPalyersAmounts = [];
-        rasedOrCalledPalyersAmounts =
-            actualPlayersAmounts.where((e) => e != 0).toList();
-        var allActivePlayerRaisedSameAmount = rasedOrCalledPalyersAmounts
-            .every((element) => element == rasedOrCalledPalyersAmounts[0]);
+        List<int?> raisedOrCalledPalyersAmounts = [];
+        raisedAmountList.entries
+            .map((e) => raisedOrCalledPalyersAmounts.add(e.value));
+        var allActivePlayerRaisedSameAmount = raisedOrCalledPalyersAmounts
+            .every((element) => element == raisedOrCalledPalyersAmounts[0]);
 
         // 全員の金額が揃っているなら、Actionは残っていない
         return !allActivePlayerRaisedSameAmount;
@@ -468,12 +484,12 @@ class _RadioActionState extends State<RadioAction> {
                   'unexpected position name is detected: $position');
           }
 
-          if (!isRemainingAction()) {
-            // hero pageへ
-            state.updateSelectedIndex('hero');
-          }
-
           if (value != 'raise') {
+            if (!isRemainingAction()) {
+              // hero pageへ
+              state.updateSelectedIndex('hero');
+            }
+
             // TODO: int?の型エラー回避してるが、良い方法を考える
             if (_currentTargetPosition > 0) {
               _currentTargetPosition = nextTargetPositionIndex() ?? 0;
@@ -706,6 +722,8 @@ class _RadioActionState extends State<RadioAction> {
           Text(
               'Preflop Active Player: ${state.getPreflopActiveUserPositions()}'),
           Text('Flop Active Player: ${state.getFlopActiveUserPositions()}'),
+          Text('Hero: ${state.heroPosition}'),
+          Text('Flop: ${state.flop}'),
           Column(children: _widgets),
           ElevatedButton(
             onPressed: () {

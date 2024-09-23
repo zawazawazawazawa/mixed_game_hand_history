@@ -5,7 +5,9 @@ class MyAppState extends ChangeNotifier {
   int _bigBlind = 100;
   int _smallBlind = 100;
   int _ante = 100;
-  int _participants = 2;
+  // int _participants = 2;
+  // TODO: debug用 3人プレイ
+  int _participants = 3;  
   List<PlayerAction> _preflop = [];
   List<PlayerAction> _flop = [];
   List<PlayerAction> _turn = [];
