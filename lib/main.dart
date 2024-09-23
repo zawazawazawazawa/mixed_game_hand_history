@@ -67,9 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
             page = HeroPage();
             break;
           case 'flop':
-            page = CommunityCardSelectionPage(
-              round: 'flop'
-              );
+            page = CommunityCardSelectionPage(round: 'flop');
             break;
           case 'flopBettingRound':
             List<String> positions = state.getFlopActiveUserPositions();

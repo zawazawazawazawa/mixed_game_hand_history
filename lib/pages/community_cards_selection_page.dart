@@ -27,6 +27,14 @@ class _CommunityCardSelectionPageState
 
       final int numOfCards = (widget.round == 'flop') ? 3 : 1;
 
+      final String nextBettingRound = (widget.round == 'flop')
+          ? 'flopBettingRound'
+          : (widget.round == 'turn')
+              ? 'turnBettingRound'
+              : (widget.round == 'river')
+                  ? 'riverBettingRound'
+                  : '';
+
       List<PlayingCard> cards =
           List.filled(numOfCards, PlayingCard(suit: null, rank: null));
 
@@ -43,41 +51,12 @@ class _CommunityCardSelectionPageState
             CardsInputWidget(
               numOfCards: numOfCards,
             ),
-            //Text(widget.round),
-            //Column(
-            //  children: List.generate(numOfCards, (index) {
-            //      return (InkWell(
-            //                child: Card(
-            //                  child: Column(
-            //                    children: [
-            //                      Text("Card$index"),
-            //                    ],
-            //                  ),
-            //                ),
-            //                onTap: () {
-            //                  showCardInputDialog(
-            //                      context: context,
-            //                      onSubmit: ({required PlayingCard card}) {
-            //                        inputCard(card: card, index: index);
-            //                      });
-            //                },
-            //              ));
-
-            //    })
-            //  ),
-            //SizedBox(height: 10),
-            //Row(
-            //  mainAxisSize: MainAxisSize.min,
-            //  children: [
-            //    ElevatedButton(
-            //      onPressed: () {
-            //        // flopBettinRoundページへ遷移
-            //        state.updateSelectedIndex('flopBettingRound');
-            //      },
-            //      child: Text('Next'),
-            //    ),
-            //  ],
-            //),
+            ElevatedButton(
+              onPressed: () {
+                state.updateSelectedIndex(nextBettingRound);
+              },
+              child: Text('Betting Round'),
+            ),
           ],
         ),
       );
